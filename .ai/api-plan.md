@@ -1,27 +1,27 @@
 # REST API Plan
 
-This document outlines the REST API for the AI Flashcard Generator, designed to support the features defined in the PRD and leverage the specified tech stack (Astro, Supabase).
+This document outlines the REST API for the AI Flashcard Generator, designed based on the project's PRD, database schema, and tech stack. The API is built using Astro API routes and secured via Supabase authentication.
 
 ## 1. Resources
 
--   **Flashcards**: Represents the user-generated flashcards.
-    -   Database Table: `public.flashcards`
--   **User**: Represents the authenticated user.
-    -   Database Table: `auth.users` (managed by Supabase)
+-   **Flashcard**: Represents a single user-owned flashcard.
+    -   *Database Table*: `public.flashcards`
 
 ## 2. Endpoints
 
+All endpoints are prefixed with `/api` and require authentication.
+
+---
+
 ### Flashcard Generation
 
-This endpoint handles the core AI-powered generation feature.
+#### `POST /api/flashcards/generate`
 
--   **HTTP Method**: `POST`
--   **URL Path**: `/api/flashcards/generate`
--   **Description**: Accepts a block of text, sends it to an external AI service, and returns a list of generated (but not yet saved) question-and-answer pairs.
+-   **Description**: Generates a list of potential flashcards from a block of text using an external AI service. The returned cards are not saved to the database; they are for client-side review only.
 -   **Request Payload**:
     ```json
     {
-      "text": "A long string of text between 1,000 and 10,000 words..."
+      "text": "A long piece of text between 1,000 and 10,000 words..."
     }
     ```
 -   **Response Payload (Success)**:
@@ -29,34 +29,29 @@ This endpoint handles the core AI-powered generation feature.
     {
       "data": [
         {
-          "question": "What is the primary web framework used?",
-          "answer": "Astro is the primary web framework."
+          "question": "What is the capital of France?",
+          "answer": "Paris"
         },
         {
-          "question": "What is React used for?",
-          "answer": "Building interactive UI components."
+          "question": "What is the formula for water?",
+          "answer": "H2O"
         }
       ]
     }
     ```
--   **Success Codes**:
-    -   `200 OK`: Successfully generated flashcards.
+-   **Success Code**: `200 OK`
 -   **Error Codes**:
-    -   `400 Bad Request`: The provided text is outside the 1,000-10,000 word limit.
-    -   `401 Unauthorized`: User is not authenticated.
-    -   `500 Internal Server Error`: An error occurred with the external AI service.
+    -   `400 Bad Request`: If the text is missing, not a string, or outside the 1,000-10,000 word count limit.
+    -   `401 Unauthorized`: If the user is not authenticated.
+    -   `500 Internal Server Error`: If the AI service fails or an unexpected error occurs.
 
 ---
 
-### Flashcard Management (CRUD)
+### Flashcard Management
 
-These endpoints follow standard REST conventions for managing the `flashcards` resource.
+#### `POST /api/flashcards`
 
-#### Create a Flashcard
-
--   **HTTP Method**: `POST`
--   **URL Path**: `/api/flashcards`
--   **Description**: Creates and saves a new flashcard to the user's collection. This is called when a user "Accepts" a card during the review process. A batch endpoint (`POST /api/flashcards/batch`) is recommended for performance but this single-creation endpoint is the fundamental operation.
+-   **Description**: Creates and saves a new flashcard to the user's collection. This is called when a user "Accepts" a card during the review process.
 -   **Request Payload**:
     ```json
     {
@@ -72,28 +67,26 @@ These endpoints follow standard REST conventions for managing the `flashcards` r
         "user_id": "user-uuid-goes-here",
         "question": "What is the capital of France?",
         "answer": "Paris",
-        "due": "2025-10-14T12:00:00Z",
+        "due": "2025-10-17T12:00:00Z",
         "stability": 0,
         "difficulty": 0,
         "lapses": 0,
         "state": "new"
-      }
+      },
+      "message": "Flashcard created successfully."
     }
     ```
--   **Success Codes**:
-    -   `201 Created`: The flashcard was successfully created.
+-   **Success Code**: `201 Created`
 -   **Error Codes**:
-    -   `400 Bad Request`: The request payload is missing `question` or `answer`.
-    -   `401 Unauthorized`: User is not authenticated.
+    -   `400 Bad Request`: If `question` or `answer` are missing or empty.
+    -   `401 Unauthorized`: If the user is not authenticated.
 
-#### Get All User Flashcards
+#### `GET /api/flashcards`
 
--   **HTTP Method**: `GET`
--   **URL Path**: `/api/flashcards`
 -   **Description**: Retrieves all flashcards belonging to the authenticated user. Supports pagination for infinite scroll.
 -   **Query Parameters**:
-    -   `limit` (integer, optional, default: 20): The number of flashcards to return.
-    -   `offset` (integer, optional, default: 0): The starting point from which to return flashcards.
+    -   `page` (optional, default: `1`): The page number to retrieve.
+    -   `limit` (optional, default: `30`): The number of items per page.
 -   **Response Payload (Success)**:
     ```json
     {
@@ -103,94 +96,79 @@ These endpoints follow standard REST conventions for managing the `flashcards` r
           "question": "What is the capital of France?",
           "answer": "Paris",
           "state": "new"
-        },
-        {
-          "id": 2,
-          "question": "What is 2 + 2?",
-          "answer": "4",
-          "state": "review"
         }
       ],
-      "meta": {
-        "total": 150,
-        "limit": 20,
-        "offset": 0
+      "pagination": {
+        "currentPage": 1,
+        "totalPages": 5,
+        "totalItems": 150
       }
     }
     ```
--   **Success Codes**:
-    -   `200 OK`: Successfully retrieved the list of flashcards.
+-   **Success Code**: `200 OK`
 -   **Error Codes**:
-    -   `401 Unauthorized`: User is not authenticated.
+    -   `400 Bad Request`: If `page` or `limit` are not positive integers.
+    -   `401 Unauthorized`: If the user is not authenticated.
 
-#### Delete a Flashcard
+#### `DELETE /api/flashcards/{id}`
 
--   **HTTP Method**: `DELETE`
--   **URL Path**: `/api/flashcards/{id}`
 -   **Description**: Permanently deletes a specific flashcard from the user's collection.
+-   **URL Parameters**:
+    -   `id`: The unique identifier of the flashcard to delete.
 -   **Response Payload (Success)**:
-    -   Empty response body.
--   **Success Codes**:
-    -   `204 No Content`: The flashcard was successfully deleted.
+    ```json
+    {
+      "message": "Flashcard deleted successfully."
+    }
+    ```
+-   **Success Code**: `200 OK` or `204 No Content`
 -   **Error Codes**:
-    -   `401 Unauthorized`: User is not authenticated.
-    -   `403 Forbidden`: User is trying to delete a flashcard that does not belong to them.
-    -   `404 Not Found`: No flashcard with the given `id` exists.
+    -   `401 Unauthorized`: If the user is not authenticated.
+    -   `403 Forbidden`: If the user tries to delete a flashcard they do not own.
+    -   `404 Not Found`: If no flashcard with the given `id` exists.
 
 ---
 
-### Study Module
+### Study
 
--   **HTTP Method**: `GET`
--   **URL Path**: `/api/flashcards/random`
--   **Description**: Retrieves a single, random flashcard from the user's collection for a study session.
+#### `GET /api/flashcards/study/random`
+
+-   **Description**: Retrieves a single random flashcard from the user's collection for a study session.
 -   **Response Payload (Success)**:
     ```json
     {
       "data": {
         "id": 42,
         "question": "What is the powerhouse of the cell?",
-        "answer": "The mitochondria",
-        "state": "review"
+        "answer": "The mitochondria"
       }
     }
     ```
--   **Success Codes**:
-    -   `200 OK`: Successfully retrieved a random flashcard.
+-   **Success Code**: `200 OK`
 -   **Error Codes**:
-    -   `401 Unauthorized`: User is not authenticated.
-    -   `404 Not Found`: The user has no flashcards in their collection.
-
----
-
-### User Account Management
-
--   **HTTP Method**: `DELETE`
--   **URL Path**: `/api/user`
--   **Description**: Deletes the authenticated user's account and all associated data (including all their flashcards via the `on_auth_user_deleted` trigger). This endpoint acts as a secure wrapper around the Supabase Admin API for user deletion.
--   **Response Payload (Success)**:
-    -   Empty response body.
--   **Success Codes**:
-    -   `204 No Content`: The user account was successfully deleted.
--   **Error Codes**:
-    -   `401 Unauthorized`: User is not authenticated.
-    -   `500 Internal Server Error`: Failed to delete the user from Supabase.
+    -   `401 Unauthorized`: If the user is not authenticated.
+    -   `404 Not Found`: If the user has no flashcards in their collection.
 
 ## 3. Authentication and Authorization
 
--   **Authentication Mechanism**: Authentication will be handled using JSON Web Tokens (JWTs) provided by **Supabase Auth**. The client-side application is responsible for acquiring, storing, and refreshing these tokens.
--   **Implementation**: Every request to a protected API endpoint must include an `Authorization` header with a Bearer token:
-    `Authorization: Bearer <SUPABASE_JWT>`
--   **Authorization**: Authorization is enforced at the database level by **PostgreSQL Row-Level Security (RLS)**. The policy `Users can manage their own flashcards` ensures that all queries (`SELECT`, `INSERT`, `UPDATE`, `DELETE`) on the `flashcards` table are automatically scoped to the `user_id` matching the authenticated user's `auth.uid()`. This prevents users from accessing or modifying another user's data.
+-   **Mechanism**: Authentication is handled using JSON Web Tokens (JWTs) provided by Supabase Auth.
+-   **Implementation**:
+    1.  The client (frontend) obtains a JWT from Supabase upon user login.
+    2.  For every request to the API endpoints, the client must include the JWT in the `Authorization` header: `Authorization: Bearer <SUPABASE_JWT>`.
+    3.  The Astro API route backend will use the Supabase client library to verify the JWT. If the token is valid, the user's identity is established.
+-   **Authorization**: Data access is controlled by PostgreSQL's Row-Level Security (RLS) policies, as defined in the database plan. The policies ensure that a user can only perform `SELECT`, `INSERT`, `UPDATE`, or `DELETE` operations on flashcards where the `user_id` column matches their authenticated user ID (`auth.uid()`).
 
 ## 4. Validation and Business Logic
 
 -   **Flashcard Generation (`POST /api/flashcards/generate`)**:
-    -   Validates that the input `text` has a word count between 1,000 and 10,000 words.
+    -   **Validation**: The API will validate that the `text` field in the request payload contains between 1,000 and 10,000 words.
+    -   **Business Logic**: This endpoint encapsulates the interaction with the external AI service. It is responsible for securely sending the text and processing the AI's response into a clean `question`/`answer` format.
+
 -   **Flashcard Creation (`POST /api/flashcards`)**:
-    -   Validates that `question` and `answer` fields are present and are not empty strings.
-    -   The `user_id` is not part of the request body; it is extracted from the authenticated user's JWT on the server to ensure a user can only create flashcards for themselves.
--   **Random Card Selection (`GET /api/flashcards/random`)**:
-    -   The business logic for selecting a random card will be implemented using the `ORDER BY random() LIMIT 1` SQL clause, as specified in the database plan.
--   **User Deletion (`DELETE /api/user`)**:
-    -   The business logic for cascading deletes (removing all of a user's flashcards upon account deletion) is handled by the `handle_user_deletion` PostgreSQL trigger in the database. The API's role is simply to initiate the user deletion process via Supabase.
+    -   **Validation**: The API enforces that the `question` and `answer` fields are not null or empty, as required by the `NOT NULL` constraint in the database schema.
+
+-   **Pagination (`GET /api/flashcards`)**:
+    -   **Business Logic**: To support the "infinite scroll" feature, this endpoint uses `page` and `limit` query parameters to calculate the `OFFSET` for the SQL query, allowing the frontend to fetch cards in chunks.
+
+-   **Random Card Selection (`GET /api/flashcards/study/random`)**:
+    -   **Business Logic**: The API will use a database query with `ORDER BY random() LIMIT 1` to efficiently select a random flashcard from the user's collection, as specified in the database plan.
