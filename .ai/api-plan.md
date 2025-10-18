@@ -172,3 +172,23 @@ All endpoints are prefixed with `/api` and require authentication.
 
 -   **Random Card Selection (`GET /api/flashcards/study/random`)**:
     -   **Business Logic**: The API will use a database query with `ORDER BY random() LIMIT 1` to efficiently select a random flashcard from the user's collection, as specified in the database plan.
+
+## 5. User Account & Session Management
+
+This section details how user authentication, session management, and account operations are handled. The implementation primarily relies on the Supabase client-side library (`@supabase/supabase-js`) for security and simplicity, which aligns with the project's tech stack.
+
+### 5.1. Client-Side Authentication Flow
+
+The following operations are performed on the frontend using the Supabase JS library. The library securely communicates with the Supabase backend to manage user sessions and returns a JWT, which is then used to authenticate with this API's endpoints (as described in Section 3).
+
+-   **User Sign-Up**: The client application will call `supabase.auth.signUp({ email, password })`. Supabase handles the account creation and the email verification flow.
+-   **User Login**: The client application will call `supabase.auth.signInWithPassword({ email, password })`. On success, Supabase returns a session object containing the JWT needed for API requests.
+-   **User Logout**: The client application will call `supabase.auth.signOut()`. This invalidates the user's session and removes the JWT from the client's storage.
+-   **Password Management**:
+    -   **Password Reset (Forgot Password)**: The flow is initiated on the client by calling `supabase.auth.resetPasswordForEmail()`.
+    -   **Change Password**: A logged-in user can change their password via the client-side `supabase.auth.updateUser()` method.
+
+### 5.2. Account Deletion
+
+-   **Implementation Note**: The PRD requires a feature for users to permanently delete their account and all associated data. Securely and automatically deleting a user from `auth.users` requires administrative privileges and **must be performed in a trusted server environment**.
+-   **Action**: A backend endpoint (`DELETE /api/account`) will be necessary to handle account deletion requests securely.
