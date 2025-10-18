@@ -45,12 +45,18 @@ export async function getUserFlashcards(
     .eq("user_id", userId)
     .range(from, to);
 
-  const countPromise = supabase.from("flashcards").select("count", { count: "exact" }).eq("user_id", userId);
+  const countPromise = supabase
+    .from("flashcards")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", userId);
 
-  const [{ data: flashcards, error }, { data: countData, error: countError }] = await Promise.all([
+  const [flashcardsResult, countResult] = await Promise.all([
     flashcardsPromise,
     countPromise,
   ]);
+
+  const { data: flashcards, error } = flashcardsResult;
+  const { count, error: countError } = countResult;
 
   if (error) {
     throw new Error(error.message);
@@ -59,7 +65,7 @@ export async function getUserFlashcards(
     throw new Error(countError.message);
   }
 
-  const totalItems = countData?.[0]?.count ?? 0;
+  const totalItems = count ?? 0;
   const totalPages = Math.ceil(totalItems / limit);
 
   return {

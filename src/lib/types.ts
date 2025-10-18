@@ -1,4 +1,4 @@
-import { type Tables } from "./db/database.types";
+import { type Tables } from "../db/database.types.ts";
 
 // --- ENTITIES ---
 
