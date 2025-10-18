@@ -5,8 +5,9 @@ export async function createFlashcard(
   supabase: SupabaseClient,
   userId: string,
   question: string,
-  answer: string,
+  answer: string
 ): Promise<Flashcard> {
+  console.log("test - db");
   const { data, error } = await supabase
     .from("flashcards")
     .insert({ user_id: userId, question, answer })
@@ -19,7 +20,6 @@ export async function createFlashcard(
 
   return data;
 }
-
 
 interface GetUserFlashcardsResult {
   data: FlashcardListItemDto[];
@@ -45,15 +45,9 @@ export async function getUserFlashcards(
     .eq("user_id", userId)
     .range(from, to);
 
-  const countPromise = supabase
-    .from("flashcards")
-    .select("*", { count: "exact", head: true })
-    .eq("user_id", userId);
+  const countPromise = supabase.from("flashcards").select("*", { count: "exact", head: true }).eq("user_id", userId);
 
-  const [flashcardsResult, countResult] = await Promise.all([
-    flashcardsPromise,
-    countPromise,
-  ]);
+  const [flashcardsResult, countResult] = await Promise.all([flashcardsPromise, countPromise]);
 
   const { data: flashcards, error } = flashcardsResult;
   const { count, error: countError } = countResult;
@@ -78,24 +72,15 @@ export async function getUserFlashcards(
   };
 }
 
-export async function deleteFlashcard(
-  supabase: SupabaseClient,
-  flashcardId: number,
-): Promise<void> {
-  const { error } = await supabase
-    .from("flashcards")
-    .delete()
-    .eq("id", flashcardId);
+export async function deleteFlashcard(supabase: SupabaseClient, flashcardId: number): Promise<void> {
+  const { error } = await supabase.from("flashcards").delete().eq("id", flashcardId);
 
   if (error) {
     throw new Error(error.message);
   }
 }
 
-export async function getRandomFlashcard(
-  supabase: SupabaseClient,
-  userId: string,
-): Promise<StudyFlashcardDto> {
+export async function getRandomFlashcard(supabase: SupabaseClient, userId: string): Promise<StudyFlashcardDto> {
   const { data, error } = await supabase.rpc("get_random_flashcard", {
     p_user_id: userId,
   });
