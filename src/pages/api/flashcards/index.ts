@@ -1,6 +1,57 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
-import { getUserFlashcards } from "@/lib/services/flashcard.service";
+import { createFlashcard, getUserFlashcards } from "@/lib/services/flashcard.service";
+
+const bodySchema = z.object({
+  question: z.string().min(1),
+  answer: z.string().min(1),
+});
+
+export const POST: APIRoute = async ({ request, locals }) => {
+  const { session, supabase } = locals;
+
+  if (!session?.user) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  try {
+    const body = await request.json();
+    const { question, answer } = bodySchema.parse(body);
+
+    try {
+      const newFlashcard = await createFlashcard(
+        supabase,
+        session.user.id,
+        question,
+        answer,
+      );
+      return new Response(
+        JSON.stringify({
+          data: newFlashcard,
+          message: "Flashcard created successfully.",
+        }),
+        {
+          status: 201,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
+    } catch (error) {
+      console.error(error);
+      return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+  } catch (error) {
+    return new Response(JSON.stringify({ error: (error as z.ZodError).flatten() }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+};
 
 export const prerender = false;
 

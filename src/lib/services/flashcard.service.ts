@@ -1,5 +1,25 @@
 import type { SupabaseClient } from "@/db/supabase.client";
-import type { FlashcardListItemDto } from "@/lib/types";
+import type { Flashcard, FlashcardListItemDto, StudyFlashcardDto } from "@/lib/types";
+
+export async function createFlashcard(
+  supabase: SupabaseClient,
+  userId: string,
+  question: string,
+  answer: string,
+): Promise<Flashcard> {
+  const { data, error } = await supabase
+    .from("flashcards")
+    .insert({ user_id: userId, question, answer })
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
 
 interface GetUserFlashcardsResult {
   data: FlashcardListItemDto[];
@@ -50,4 +70,37 @@ export async function getUserFlashcards(
       totalItems,
     },
   };
+}
+
+export async function deleteFlashcard(
+  supabase: SupabaseClient,
+  flashcardId: number,
+): Promise<void> {
+  const { error } = await supabase
+    .from("flashcards")
+    .delete()
+    .eq("id", flashcardId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function getRandomFlashcard(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<StudyFlashcardDto> {
+  const { data, error } = await supabase.rpc("get_random_flashcard", {
+    p_user_id: userId,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!data || data.length === 0) {
+    throw new Error("No flashcards found");
+  }
+
+  return data[0];
 }
