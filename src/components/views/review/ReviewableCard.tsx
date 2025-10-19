@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
-type GeneratedFlashcardDto = {
+interface GeneratedFlashcardDto {
   question: string;
   answer: string;
-};
+}
 
 interface ReviewableCardProps {
   card: GeneratedFlashcardDto;

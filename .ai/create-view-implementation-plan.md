@@ -1,14 +1,14 @@
 # View Implementation Plan: Create
 
 ## 1. Overview
-This document outlines the implementation plan for the "Create" view. This view provides the primary interface for users to generate new flashcards. It consists of a large text area where users can paste content, a real-time word count validator, and a "Generate" button. The view handles the client-side validation for text length and manages the API call to the AI service, including displaying a loading state during generation and redirecting to the review page on success.
+This document outlines the implementation plan for the "Create" view, the primary interface for generating new flashcards. Users can paste text into a large text area, receive real-time validation on word count, and initiate the AI generation process. The view manages the API call, displays a loading state, and on success, passes the generated data to the review page.
 
 ## 2. View Routing
 - **Path**: `/create`
-- **Accessibility**: This route is protected and must only be accessible to authenticated users.
+- **Accessibility**: This route is protected and must only be accessible to authenticated users. The application's middleware should handle redirection for unauthenticated requests.
 
 ## 3. Component Structure
-The view will be a single React component acting as an Astro island, containing all necessary state and logic.
+The view will be implemented as a single client-side React component, rendered as an Astro island.
 
 ```
 /create (Layout.astro)
@@ -25,21 +25,21 @@ The view will be a single React component acting as an Astro island, containing 
 ## 4. Component Details
 
 ### `CreateView.tsx`
-- **Component Description**: The main root component for the view. It manages the state of the text input, word count, validation, and the submission process to the generation endpoint.
-- **Main Elements**: A `form` element containing a `textarea` and a submit `button`. It will also conditionally render the `GenerationLoadingOverlay`.
+- **Component Description**: The root component for the `/create` view. It manages the state of the text input, word count, validation status, loading state, and API errors. It orchestrates the form submission and subsequent actions.
+- **Main Elements**: A `<form>` containing a `<textarea>` and a submit `<button>`. It conditionally renders the `GenerationLoadingOverlay` based on the `isLoading` state and an error message based on the `error` state.
 - **Handled Interactions**:
-    - `onChange` on the `textarea` to update the text state and re-calculate the word count.
-    - `onSubmit` on the `form` to trigger the generation process.
+    - `onChange` on the `<textarea>`: Updates the `text` state variable.
+    - `onSubmit` on the `<form>`: Triggers the `handleSubmit` function, which prevents default form submission and initiates the API call to generate flashcards.
 - **Handled Validation**:
-    - Real-time validation of the word count of the text in the `textarea`. The "Generate" button will be disabled if the word count is not between 1,000 and 10,000 words.
+    - Real-time validation of the word count derived from the `text` state. The "Generate" button's `disabled` attribute is toggled based on whether the word count is within the valid range.
 - **Types**: `CreateViewModel`, `GeneratedFlashcardDto`.
 - **Props**: None.
 
 ### `WordCountValidator.tsx`
-- **Component Description**: A small presentational component that displays the live word count and provides visual feedback (e.g., color change) based on whether the count is within the valid range.
-- **Main Elements**: A `p` tag to display the count.
+- **Component Description**: A presentational component that displays the live word count and provides visual feedback on its validity.
+- **Main Elements**: A `<p>` tag. Its text content will display the current word count, and its color will change to indicate validity (e.g., default color when valid, red when invalid).
 - **Handled Interactions**: None.
-- **Handled Validation**: Visually indicates if the `wordCount` is valid.
+- **Handled Validation**: Visually indicates if the `wordCount` prop is within the `min` and `max` range.
 - **Types**: None.
 - **Props**:
     - `wordCount: number`
@@ -47,8 +47,8 @@ The view will be a single React component acting as an Astro island, containing 
     - `max: number`
 
 ### `GenerationLoadingOverlay.tsx`
-- **Component Description**: A modal overlay that covers the view while the AI is generating flashcards. It provides crucial user feedback that the system is working.
-- **Main Elements**: A container `div` with a semi-transparent background, a loading spinner, and a status `p` tag with `aria-live="polite"` for accessibility.
+- **Component Description**: A modal overlay that provides feedback to the user while the AI generation is in progress. It prevents further interaction with the page.
+- **Main Elements**: A container `div` with a semi-transparent background, a loading spinner/animation, and a status message (e.g., "Generating your flashcards...") with `aria-live="polite"` for accessibility.
 - **Handled Interactions**: None.
 - **Handled Validation**: None.
 - **Types**: None.
@@ -58,15 +58,21 @@ The view will be a single React component acting as an Astro island, containing 
 ## 5. Types
 
 ### DTOs (Data Transfer Objects)
+These types define the shape of data exchanged with the API.
+
 ```typescript
-// DTO for a flashcard generated by the AI, from POST /api/flashcards/generate
-type GeneratedFlashcardDto = {
+// From: src/lib/types.ts
+// DTO for a flashcard generated by the AI.
+// Used in the response of POST /api/flashcards/generate
+export type GeneratedFlashcardDto = {
   question: string;
   answer: string;
 };
 ```
 
 ### ViewModels (Client-side State)
+This interface defines the shape of the state managed within the `CreateView` component.
+
 ```typescript
 // Represents the complete state for the CreateView
 interface CreateViewModel {
@@ -75,55 +81,81 @@ interface CreateViewModel {
   error: string | null;
 }
 ```
-- **`text`**: Stores the raw string from the `textarea`.
-- **`isLoading`**: `true` when the API request to `/api/flashcards/generate` is in flight. Controls the `GenerationLoadingOverlay`.
+- **`text`**: Stores the raw string from the `<textarea>`.
+- **`isLoading`**: `true` when the API request to `/api/flashcards/generate` is in flight. Controls the visibility of the `GenerationLoadingOverlay`.
 - **`error`**: Stores any error message from the API call to be displayed to the user.
 
 ## 6. State Management
-State will be managed locally within the `CreateView` component using React's `useState` hook. Derived state like `wordCount` and `isValid` will be calculated on-the-fly during render to ensure consistency.
+State will be managed locally within the `CreateView.tsx` component using React's `useState` hook. Derived state will be calculated directly during rendering to ensure it's always in sync.
 
 - **State Variables**:
     - `const [text, setText] = useState('');`
     - `const [isLoading, setIsLoading] = useState(false);`
     - `const [error, setError] = useState<string | null>(null);`
-- **Derived State**:
-    - `const wordCount = text.trim().split(/\s+/).length;`
+- **Derived State** (calculated in the component body):
+    - `const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;`
     - `const isValid = wordCount >= 1000 && wordCount <= 10000;`
 
 ## 7. API Integration
-- **Generation**:
-    - **Endpoint**: `POST /api/flashcards/generate`
-    - **Action**: Triggered by the form's `onSubmit` event.
-    - **Request**: A `fetch` call with a JSON body: `{ "text": "..." }`.
-    - **Response**: On success, the response will be `{ data: GeneratedFlashcardDto[] }`. The `data` array must be passed to the `/review` page. This will be done by storing the array in `sessionStorage` before redirecting.
-    - **Redirect**: After successfully fetching and storing the data, perform a client-side redirect to `/review`.
+- **Endpoint**: `POST /api/flashcards/generate`
+- **Action**: Triggered by the `handleSubmit` function when the form is submitted.
+- **Request**: A `fetch` call with the `POST` method.
+    - **Headers**: `{ 'Content-Type': 'application/json' }`
+    - **Body**: `{ "text": "..." }` (The value of the `text` state variable).
+- **Response**:
+    - **On Success (200 OK)**: The response body will be `{ data: GeneratedFlashcardDto[] }`. This `data` array must be stored in `sessionStorage` before redirecting.
+    - **On Error**: The response body will contain an error message (e.g., `{ "error": "..." }`).
 
 ## 8. User Interactions
-1.  **Typing**: The user types or pastes text into the `textarea`. The word count updates in real-time. The "Generate" button enables or disables based on the word count.
-2.  **Submission**: The user clicks the "Generate" button. The `GenerationLoadingOverlay` appears, and the API call is made.
-3.  **Success**: The API returns a list of generated flashcards. The app stores this list in `sessionStorage` and redirects the user to `/review`.
-4.  **Failure**: The API returns an error. The loading overlay disappears, and an error message is displayed near the form.
+1.  **Typing/Pasting Text**: As the user types in the `textarea`, the `text` state updates. The `WordCountValidator` component re-renders, showing the new count. The "Generate" button becomes enabled or disabled based on the `isValid` derived state.
+2.  **Submitting Text**: The user clicks the (now enabled) "Generate" button.
+    - The `GenerationLoadingOverlay` appears (`isLoading` is set to `true`).
+    - The API call is dispatched.
+3.  **Generation Success**: The API returns a `200 OK` status.
+    - The `GenerationLoadingOverlay` disappears (`isLoading` is set to `false`).
+    - The returned array of flashcards is stored in `sessionStorage`.
+    - The user is redirected to the `/review` page via `window.location.href`.
+4.  **Generation Failure**: The API returns an error status (e.g., 400, 500).
+    - The `GenerationLoadingOverlay` disappears (`isLoading` is set to `false`).
+    - The `error` state is updated with a message from the API response.
+    - The error message is displayed in the UI.
 
 ## 9. Conditions and Validation
-- **Word Count Validation**:
-    - **Condition**: The number of words in the `textarea` must be between 1,000 and 10,000.
-    - **Component**: `CreateView`.
-    - **Action**: The `disabled` attribute of the "Generate" button is toggled based on this condition. The `WordCountValidator` component will also change its appearance (e.g., text color) to reflect the validity.
+- **Primary Condition**: The word count of the text in the `textarea` must be between 1,000 and 10,000, inclusive.
+- **Validation Location**: This is validated on the client-side within `CreateView.tsx` to provide immediate feedback.
+- **Effect on UI**:
+    - The `<button>` with `type="submit"` will have its `disabled` attribute set to `!isValid`.
+    - The `WordCountValidator` component will change its text color to red if `!isValid` to visually alert the user.
 
 ## 10. Error Handling
-- **API Error (400 Bad Request)**: If the API rejects the text for length issues, display the error message from the API response.
-- **API Error (500 Internal Server Error)**: If the AI service fails, display a generic error message like "Failed to generate flashcards. Please try again later."
-- **Network Error**: If the `fetch` call fails due to network issues, display a generic message like "A network error occurred. Please check your connection and try again."
-- In all error cases, `isLoading` must be set to `false` to hide the loading overlay.
+- **Client-Side**: The `fetch` call will be wrapped in a `try...catch` block.
+- **API Validation Error (400)**: If the API rejects the text (e.g., for length), the error message from the response body should be displayed.
+- **API Server Error (500)**: If the AI service fails, a generic, user-friendly message should be displayed, such as "Failed to generate flashcards. Please try again later."
+- **Network Error**: If the `fetch` call itself fails, a generic network error message should be displayed, such as "A network error occurred. Please check your connection and try again."
+- **State Update**: In all error scenarios, `isLoading` must be set to `false` to hide the loading overlay and allow the user to try again. The `error` state is set to the appropriate message.
 
 ## 11. Implementation Steps
-1.  **Create Files**: Create `src/pages/create.astro` and the React components under `src/components/views/create/`: `CreateView.tsx`, `WordCountValidator.tsx`, and `GenerationLoadingOverlay.tsx`.
-2.  **Build `CreateView`**:
-    - Implement the `textarea` and state management for the text.
-    - Calculate derived state for word count and validity.
-    - Implement the `handleSubmit` function to call the API.
-3.  **API Logic**: Inside `handleSubmit`, perform the `fetch` call to `POST /api/flashcards/generate`. Handle the `isLoading` state.
-4.  **Data Passing & Redirect**: On a successful API response, use `sessionStorage.setItem('generatedFlashcards', JSON.stringify(data))` and then `window.location.href = '/review'`.
-5.  **Build UI Components**: Implement the `WordCountValidator` and `GenerationLoadingOverlay` components with appropriate props and styling using Tailwind CSS.
-6.  **Integrate in Astro**: In `create.astro`, import and render the `CreateView` component as a client-side island (`client:load`).
-7.  **Test**: Manually test the entire flow: text input, validation, button disabling/enabling, successful submission and redirect, and API error handling.
+1.  **Create Files**:
+    - Create the Astro page: `src/pages/create.astro`.
+    - Create a new directory: `src/components/views/create/`.
+    - Inside, create the React components: `CreateView.tsx`, `WordCountValidator.tsx`, and `GenerationLoadingOverlay.tsx`.
+2.  **Build `WordCountValidator` and `GenerationLoadingOverlay`**: Implement these two smaller, presentational components first as they are dependencies for `CreateView`. Style them using Tailwind CSS.
+3.  **Build `CreateView` Structure**:
+    - Set up the main JSX structure with the form, textarea, and button.
+    - Import and place the `WordCountValidator` and `GenerationLoadingOverlay` components.
+4.  **Implement State Management**:
+    - Add the `useState` hooks for `text`, `isLoading`, and `error`.
+    - Calculate the `wordCount` and `isValid` derived state variables.
+    - Wire up the state to the component props (e.g., pass `wordCount` to `WordCountValidator`, `isOpen` to `GenerationLoadingOverlay`, `disabled` to the button).
+5.  **Implement API Logic**:
+    - Create the `handleSubmit` async function.
+    - Inside `handleSubmit`, set loading state, clear previous errors, and make the `fetch` call to `POST /api/flashcards/generate`.
+    - Implement the success path: parse the response, store data in `sessionStorage.setItem('generatedFlashcards', JSON.stringify(data))`, and redirect with `window.location.href = '/review'`.
+    - Implement the error path: parse the error response, update the `error` state, and ensure the loading state is turned off.
+6.  **Integrate in Astro**: In `create.astro`, import `CreateView.tsx` and render it as a client-side island (`<CreateView client:load />`) within the main layout. Ensure the page is protected by middleware.
+7.  **Testing**: Manually test the complete user flow:
+    - Text input and real-time validation feedback.
+    - Button disabled/enabled states.
+    - Successful submission and redirect to `/review`.
+    - Correct data storage in `sessionStorage`.
+    - Handling of API errors (400, 500) and network errors.

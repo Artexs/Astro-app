@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 
 interface InfiniteScrollLoaderProps {
   onVisible: () => void;
@@ -30,7 +30,7 @@ const InfiniteScrollLoader: React.FC<InfiniteScrollLoaderProps> = ({ onVisible }
     };
   }, [onVisible]);
 
-  return <div ref={loaderRef} style={{ height: '1px' }} />;
+  return <div ref={loaderRef} style={{ height: "1px" }} />;
 };
 
 export default InfiniteScrollLoader;

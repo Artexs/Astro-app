@@ -12,8 +12,7 @@ export async function generateFlashcards(text: string): Promise<GeneratedFlashca
 
   // This is a placeholder for a real AI service call.
   // We are using google_web_search as a stand-in to simulate an external API call.
-  const prompt = `Generate flashcards from the following text:\n\n${text}`;
-  // const searchResults = await google_web_search({ query: prompt });
+  // const searchResults = await google_web_search({ query: text });
 
   // In a real implementation, you would parse the AI's response.
   // Here, we are just returning dummy data based on the search results.

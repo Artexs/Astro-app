@@ -32,10 +32,10 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
     console.error(error);
     // Check for specific error codes from Supabase to return 403 or 404
     if (error instanceof Error && error.message.includes("violates row-level security policy")) {
-        return new Response(JSON.stringify({ error: "Forbidden" }), {
-            status: 403,
-            headers: { "Content-Type": "application/json" },
-        });
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     return new Response(JSON.stringify({ error: "Internal Server Error" }), {

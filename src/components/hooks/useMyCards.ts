@@ -2,11 +2,11 @@ import { useState, useEffect, useCallback } from "react";
 import { type FlashcardListItemDto } from "@/lib/types";
 
 // DTO for pagination info, from GET /api/flashcards
-type PaginationDto = {
+interface PaginationDto {
   currentPage: number;
   totalPages: number;
   totalItems: number;
-};
+}
 
 // Represents the complete state for the MyCardsView
 interface MyCardsViewModel {

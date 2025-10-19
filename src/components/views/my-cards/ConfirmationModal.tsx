@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,8 +8,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -20,13 +20,13 @@ interface ConfirmationModalProps {
   onCancel: () => void;
 }
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ 
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   isOpen,
   title,
   description,
   isProcessing,
   onConfirm,
-  onCancel 
+  onCancel,
 }) => {
   if (!isOpen) {
     return null;
@@ -47,7 +47,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           </AlertDialogCancel>
           <AlertDialogAction asChild>
             <Button onClick={onConfirm} disabled={isProcessing}>
-              {isProcessing ? 'Deleting...' : 'Confirm'}
+              {isProcessing ? "Deleting..." : "Confirm"}
             </Button>
           </AlertDialogAction>
         </AlertDialogFooter>
