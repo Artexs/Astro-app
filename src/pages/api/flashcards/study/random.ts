@@ -14,7 +14,9 @@ export const GET: APIRoute = async ({ locals }) => {
   }
 
   try {
+    console.log("test4");
     const randomFlashcard = await getRandomFlashcard(supabase, session.user.id);
+    console.log("test2");
     return new Response(JSON.stringify({ data: randomFlashcard }), {
       status: 200,
       headers: { "Content-Type": "application/json" },

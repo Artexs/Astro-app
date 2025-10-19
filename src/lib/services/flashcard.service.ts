@@ -81,17 +81,36 @@ export async function deleteFlashcard(supabase: SupabaseClient, flashcardId: num
 }
 
 export async function getRandomFlashcard(supabase: SupabaseClient, userId: string): Promise<StudyFlashcardDto> {
-  const { data, error } = await supabase.rpc("get_random_flashcard", {
-    p_user_id: userId,
-  });
+  // Step 1: Get the total count of flashcards for the user.
+  const { count, error: countError } = await supabase
+    .from("flashcards")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", userId);
+
+  if (countError) {
+    throw new Error(countError.message);
+  }
+
+  if (count === null || count === 0) {
+    throw new Error("No flashcards found");
+  }
+
+  // Step 2: Generate a random index and fetch one card.
+  const randomIndex = Math.floor(Math.random() * count);
+  const { data, error } = await supabase
+    .from("flashcards")
+    .select("id, question, answer")
+    .eq("user_id", userId)
+    .range(randomIndex, randomIndex)
+    .single();
 
   if (error) {
     throw new Error(error.message);
   }
 
-  if (!data || data.length === 0) {
+  if (!data) {
     throw new Error("No flashcards found");
   }
 
-  return data[0];
+  return data;
 }
