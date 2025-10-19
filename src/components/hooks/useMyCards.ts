@@ -34,28 +34,28 @@ export const useMyCards = () => {
   const fetchNextPage = useCallback(async () => {
     if (state.isLoading || !state.hasMore) return;
 
-    setState(prevState => ({ ...prevState, isLoading: true, error: null }));
+    setState((prevState) => ({ ...prevState, isLoading: true, error: null }));
 
     try {
       const response = await fetch(`/api/flashcards?page=${state.page}&limit=30`);
-
+      console.log("test frontend: ", response);
       if (!response.ok) {
         if (response.status === 401) {
-          window.location.href = '/login';
+          window.location.href = "/login";
           return;
         }
-        throw new Error('Failed to fetch cards');
+        throw new Error("Failed to fetch cards");
       }
 
-      const { data, pagination }: { data: FlashcardListItemDto[], pagination: PaginationDto } = await response.json();
+      const { data, pagination }: { data: FlashcardListItemDto[]; pagination: PaginationDto } = await response.json();
 
       // On initial load, if there are no cards, redirect to create page
       if (state.page === 1 && pagination.totalItems === 0) {
-        window.location.href = '/create';
+        window.location.href = "/create";
         return;
       }
 
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         cards: [...prevState.cards, ...data],
         page: prevState.page + 1,
@@ -63,51 +63,51 @@ export const useMyCards = () => {
         isLoading: false,
       }));
     } catch (error) {
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         isLoading: false,
-        error: error instanceof Error ? error.message : 'An unknown error occurred',
+        error: error instanceof Error ? error.message : "An unknown error occurred",
       }));
     }
   }, [state.isLoading, state.hasMore, state.page]);
 
   const requestDelete = (card: FlashcardListItemDto) => {
-    setState(prevState => ({ ...prevState, cardToDelete: card }));
+    setState((prevState) => ({ ...prevState, cardToDelete: card }));
   };
 
   const cancelDelete = () => {
-    setState(prevState => ({ ...prevState, cardToDelete: null }));
+    setState((prevState) => ({ ...prevState, cardToDelete: null }));
   };
 
   const confirmDelete = async () => {
     if (!state.cardToDelete) return;
 
-    setState(prevState => ({ ...prevState, isDeleting: true, error: null }));
+    setState((prevState) => ({ ...prevState, isDeleting: true, error: null }));
 
     try {
       const response = await fetch(`/api/flashcards/${state.cardToDelete.id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
       if (!response.ok) {
         if (response.status === 401) {
-          window.location.href = '/login';
+          window.location.href = "/login";
           return;
         }
-        throw new Error('Failed to delete card');
+        throw new Error("Failed to delete card");
       }
 
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
-        cards: prevState.cards.filter(card => card.id !== prevState.cardToDelete?.id),
+        cards: prevState.cards.filter((card) => card.id !== prevState.cardToDelete?.id),
         isDeleting: false,
         cardToDelete: null,
       }));
     } catch (error) {
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         isDeleting: false,
-        error: error instanceof Error ? error.message : 'An unknown error occurred',
+        error: error instanceof Error ? error.message : "An unknown error occurred",
       }));
     }
   };
