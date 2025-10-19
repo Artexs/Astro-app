@@ -9,8 +9,8 @@ const StudyView = () => {
   const { currentCard, isLoading, error } = state;
 
   return (
-    <div className="container mx-auto max-w-2xl py-8 flex flex-col items-center gap-6">
-      <h1 className="text-4xl font-bold">Study Session</h1>
+    <div className="py-8 flex flex-col items-center gap-6">
+      <h1 className="text-4xl font-bold text-gradient">Study Session</h1>
 
       {isLoading && (
         <div className="flex items-center justify-center h-80">

@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import Header from "../components/layout/Header.tsx";
+import PageWrapper from "../components/PageWrapper.astro";
 // import { createClient } from "../db/supabase.client.ts";
 
 interface Props {
@@ -27,7 +28,9 @@ const { title = "10x Astro Starter" } = Astro.props;
   </head>
   <body>
     <Header isAuthenticated={true} client:load />
-    <slot />
+    <PageWrapper>
+      <slot />
+    </PageWrapper>
   </body>
 </html>
 

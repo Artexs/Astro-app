@@ -47,8 +47,8 @@ const CreateView: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-4xl font-bold mb-4">Create Flashcards</h1>
+    <div className="p-4">
+      <h1 className="text-4xl font-bold mb-4 text-gradient">Create Flashcards</h1>
       <p className="text-lg text-gray-600 mb-8">
         Paste your text below (between 1,000 and 10,000 words) to generate flashcards.
       </p>

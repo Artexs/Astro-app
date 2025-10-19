@@ -16,12 +16,22 @@ const StudyCard = ({ card }: StudyCardProps) => {
   };
 
   return (
-    <div className="w-full h-80 perspective-1000" onClick={handleCardFlip}>
+    <div
+      className="w-full h-80 perspective-1000"
+      onClick={handleCardFlip}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleCardFlip();
+        }
+      }}
+    >
       <div
-        className={cn(
-          "relative w-full h-full transition-transform duration-700 preserve-3d",
-          { "rotate-y-180": isFlipped }
-        )}
+        className={cn("relative w-full h-full transition-transform duration-700 preserve-3d", {
+          "rotate-y-180": isFlipped,
+        })}
       >
         {/* Front of the card */}
         <div className="absolute w-full h-full backface-hidden">

@@ -11,7 +11,7 @@ const ReviewView = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Review Generated Cards</h1>
+      <h1 className="text-2xl font-bold mb-4 text-gradient">Review Generated Cards</h1>
       {state.error && <p className="text-red-500">{state.error}</p>}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {state.cardsToReview.map((card, index) => (

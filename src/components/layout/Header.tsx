@@ -29,7 +29,7 @@ const Header: React.FC<HeaderProps> = ({ isAuthenticated }) => {
   };
 
   return (
-    <header className="bg-background border-b px-4 md:px-6 h-16 flex items-center justify-between">
+    <header className="bg-background/50 backdrop-blur-lg border-b px-4 md:px-6 h-16 flex items-center justify-between">
       <a className="flex items-center gap-2" href="/">
         <span className="font-semibold text-lg">Flashcards</span>
       </a>
