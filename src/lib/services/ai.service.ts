@@ -1,5 +1,66 @@
-// import { google_web_search } from "@google/generative-ai-function-calling";
+import OpenAI from "openai";
 import type { GeneratedFlashcardDto } from "@/lib/types";
+
+interface ChatOptions {
+  systemMessage?: string;
+  userMessage: string;
+  response_format?: {
+    type: "json_object";
+  };
+  model?: string;
+  temperature?: number;
+  max_tokens?: number;
+}
+
+class OpenAiService {
+  private openai: OpenAI;
+  private defaultModel = "gpt-4o-mini";
+
+  constructor() {
+    const apiKey = import.meta.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      throw new Error("OPENAI_API_KEY is not set in environment variables.");
+    }
+    this.openai = new OpenAI({ apiKey });
+  }
+
+  async chat(options: ChatOptions): Promise<any> {
+    const { systemMessage, userMessage, response_format, model, temperature, max_tokens } = options;
+
+    const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [];
+
+    if (systemMessage) {
+      messages.push({ role: "system", content: systemMessage });
+    }
+
+    messages.push({ role: "user", content: userMessage });
+
+    try {
+      const response = await this.openai.chat.completions.create({
+        model: model || this.defaultModel,
+        messages,
+        response_format: response_format,
+        temperature: temperature || 0.7,
+        max_tokens: max_tokens || 2048,
+      });
+
+      const content = response.choices[0]?.message?.content;
+
+      if (!content) {
+        throw new Error("No content in API response.");
+      }
+
+      if (response_format?.type === "json_object") {
+        return JSON.parse(content);
+      }
+
+      return content;
+    } catch (error) {
+      console.error("Error calling OpenAI API:", error);
+      throw error;
+    }
+  }
+}
 
 const WORD_COUNT_MIN = 1000;
 const WORD_COUNT_MAX = 10000;
@@ -10,40 +71,22 @@ export async function generateFlashcards(text: string): Promise<GeneratedFlashca
     throw new Error(`Text must be between ${WORD_COUNT_MIN} and ${WORD_COUNT_MAX} words.`);
   }
 
-  // This is a placeholder for a real AI service call.
-  // We are using google_web_search as a stand-in to simulate an external API call.
-  // const searchResults = await google_web_search({ query: text });
+  const openAiService = new OpenAiService();
 
-  // In a real implementation, you would parse the AI's response.
-  // Here, we are just returning dummy data based on the search results.
-  // const flashcards: GeneratedFlashcardDto[] = searchResults.results.slice(0, 5).map((result: any) => ({
-  //   question: result.title,
-  //   answer: result.snippet,
-  // }));
-  const flashcards: GeneratedFlashcardDto[] = [
-    {
-      question: "What is the capital of France?",
-      answer: "Paris",
-    },
-    {
-      question: "What is the formula for water?",
-      answer: "H2O",
-    },
-  ];
+  // TODO: Use a better system prompt
+  const systemPrompt = `You are an expert flashcard creator. Create a JSON object with a single key "flashcards", which is an array of objects. Each object should have a "question" and "answer" property.`;
 
-  if (flashcards.length === 0) {
-    // Return some dummy data if no results are found
-    return [
-      {
-        question: "What is the capital of France?",
-        answer: "Paris",
-      },
-      {
-        question: "What is the formula for water?",
-        answer: "H2O",
-      },
-    ];
+  const response = await openAiService.chat({
+    systemMessage: systemPrompt,
+    userMessage: `Generate flashcards from the following text: ${text}`,
+    response_format: {
+      type: "json_object",
+    },
+  });
+
+  if (!response.flashcards) {
+    throw new Error("AI response did not contain flashcards. The response was: " + JSON.stringify(response));
   }
 
-  return flashcards;
+  return response.flashcards;
 }
