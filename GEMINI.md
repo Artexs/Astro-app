@@ -10,17 +10,19 @@ The project is configured with AI development tools to enhance the development e
 
 ### Prerequisites
 
-*   Node.js v22.14.0 (as specified in `.nvmrc`)
-*   npm (comes with Node.js)
+- Node.js v22.14.0 (as specified in `.nvmrc`)
+- npm (comes with Node.js)
 
 ### Getting Started
 
 1.  **Install dependencies:**
+
     ```bash
     npm install
     ```
 
 2.  **Run the development server:**
+
     ```bash
     npm run dev
     ```
@@ -32,26 +34,28 @@ The project is configured with AI development tools to enhance the development e
 
 ### Available Scripts
 
-*   `npm run dev`: Start development server
-*   `npm run build`: Build for production
-*   `npm run preview`: Preview production build
-*   `npm run lint`: Run ESLint
-*   `npm run lint:fix`: Fix ESLint issues
-*   `npm run format`: Format code with Prettier
+- `npm run dev`: Start development server
+- `npm run build`: Build for production
+- `npm run preview`: Preview production build
+- `npm run lint`: Run ESLint
+- `npm run lint:fix`: Fix ESLint issues
+- `npm run format`: Format code with Prettier
 
 ## Development Conventions
 
-*   **Coding Style:** The project uses ESLint and Prettier to enforce a consistent coding style. Configuration files for these tools can be found in `eslint.config.js` and `.prettierrc.json`.
-*   **Testing:** There are no explicit testing practices defined in the project.
-*   **Contribution Guidelines:** The project has AI guidelines and coding practices defined in the AI configuration files. See the `AI Development Support` section in the `README.md` for more details.
-*   **Project Structure:**
-    ```
-    .
-    ├── src/
-    │   ├── layouts/    # Astro layouts
-    │   ├── pages/      # Astro pages
-    │   │   └── api/    # API endpoints
-    │   ├── components/ # UI components (Astro & React)
-    │   └── assets/     # Static assets
-    ├── public/         # Public assets
-    ```
+- **Coding Style:** The project uses ESLint and Prettier to enforce a consistent coding style. Configuration files for these tools can be found in `eslint.config.js` and `.prettierrc.json`.
+- **Testing:** There are no explicit testing practices defined in the project.
+- **Contribution Guidelines:** The project has AI guidelines and coding practices defined in the AI configuration files. See the `AI Development Support` section in the `README.md` for more details.
+- **Project Structure:**
+  ```
+  .
+  ├── src/
+  │   ├── layouts/    # Astro layouts
+  │   ├── pages/      # Astro pages
+  │   │   └── api/    # API endpoints
+  │   ├── components/ # UI components (Astro & React)
+  │   └── assets/     # Static assets
+  ├── public/         # Public assets
+  ```
+
+DO NOT RUN lint automatically
