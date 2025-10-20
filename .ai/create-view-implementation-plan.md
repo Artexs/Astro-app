@@ -1,13 +1,16 @@
 # View Implementation Plan: Create
 
 ## 1. Overview
+
 This document outlines the implementation plan for the "Create" view, the primary interface for generating new flashcards. Users can paste text into a large text area, receive real-time validation on word count, and initiate the AI generation process. The view manages the API call, displays a loading state, and on success, passes the generated data to the review page.
 
 ## 2. View Routing
+
 - **Path**: `/create`
 - **Accessibility**: This route is protected and must only be accessible to authenticated users. The application's middleware should handle redirection for unauthenticated requests.
 
 ## 3. Component Structure
+
 The view will be implemented as a single client-side React component, rendered as an Astro island.
 
 ```
@@ -25,39 +28,43 @@ The view will be implemented as a single client-side React component, rendered a
 ## 4. Component Details
 
 ### `CreateView.tsx`
+
 - **Component Description**: The root component for the `/create` view. It manages the state of the text input, word count, validation status, loading state, and API errors. It orchestrates the form submission and subsequent actions.
 - **Main Elements**: A `<form>` containing a `<textarea>` and a submit `<button>`. It conditionally renders the `GenerationLoadingOverlay` based on the `isLoading` state and an error message based on the `error` state.
 - **Handled Interactions**:
-    - `onChange` on the `<textarea>`: Updates the `text` state variable.
-    - `onSubmit` on the `<form>`: Triggers the `handleSubmit` function, which prevents default form submission and initiates the API call to generate flashcards.
+  - `onChange` on the `<textarea>`: Updates the `text` state variable.
+  - `onSubmit` on the `<form>`: Triggers the `handleSubmit` function, which prevents default form submission and initiates the API call to generate flashcards.
 - **Handled Validation**:
-    - Real-time validation of the word count derived from the `text` state. The "Generate" button's `disabled` attribute is toggled based on whether the word count is within the valid range.
+  - Real-time validation of the word count derived from the `text` state. The "Generate" button's `disabled` attribute is toggled based on whether the word count is within the valid range.
 - **Types**: `CreateViewModel`, `GeneratedFlashcardDto`.
 - **Props**: None.
 
 ### `WordCountValidator.tsx`
+
 - **Component Description**: A presentational component that displays the live word count and provides visual feedback on its validity.
 - **Main Elements**: A `<p>` tag. Its text content will display the current word count, and its color will change to indicate validity (e.g., default color when valid, red when invalid).
 - **Handled Interactions**: None.
 - **Handled Validation**: Visually indicates if the `wordCount` prop is within the `min` and `max` range.
 - **Types**: None.
 - **Props**:
-    - `wordCount: number`
-    - `min: number`
-    - `max: number`
+  - `wordCount: number`
+  - `min: number`
+  - `max: number`
 
 ### `GenerationLoadingOverlay.tsx`
+
 - **Component Description**: A modal overlay that provides feedback to the user while the AI generation is in progress. It prevents further interaction with the page.
 - **Main Elements**: A container `div` with a semi-transparent background, a loading spinner/animation, and a status message (e.g., "Generating your flashcards...") with `aria-live="polite"` for accessibility.
 - **Handled Interactions**: None.
 - **Handled Validation**: None.
 - **Types**: None.
 - **Props**:
-    - `isOpen: boolean`
+  - `isOpen: boolean`
 
 ## 5. Types
 
 ### DTOs (Data Transfer Objects)
+
 These types define the shape of data exchanged with the API.
 
 ```typescript
@@ -71,6 +78,7 @@ export type GeneratedFlashcardDto = {
 ```
 
 ### ViewModels (Client-side State)
+
 This interface defines the shape of the state managed within the `CreateView` component.
 
 ```typescript
@@ -81,32 +89,36 @@ interface CreateViewModel {
   error: string | null;
 }
 ```
+
 - **`text`**: Stores the raw string from the `<textarea>`.
 - **`isLoading`**: `true` when the API request to `/api/flashcards/generate` is in flight. Controls the visibility of the `GenerationLoadingOverlay`.
 - **`error`**: Stores any error message from the API call to be displayed to the user.
 
 ## 6. State Management
+
 State will be managed locally within the `CreateView.tsx` component using React's `useState` hook. Derived state will be calculated directly during rendering to ensure it's always in sync.
 
 - **State Variables**:
-    - `const [text, setText] = useState('');`
-    - `const [isLoading, setIsLoading] = useState(false);`
-    - `const [error, setError] = useState<string | null>(null);`
+  - `const [text, setText] = useState('');`
+  - `const [isLoading, setIsLoading] = useState(false);`
+  - `const [error, setError] = useState<string | null>(null);`
 - **Derived State** (calculated in the component body):
-    - `const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;`
-    - `const isValid = wordCount >= 1000 && wordCount <= 10000;`
+  - `const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;`
+  - `const isValid = wordCount >= 1000 && wordCount <= 10000;`
 
 ## 7. API Integration
+
 - **Endpoint**: `POST /api/flashcards/generate`
 - **Action**: Triggered by the `handleSubmit` function when the form is submitted.
 - **Request**: A `fetch` call with the `POST` method.
-    - **Headers**: `{ 'Content-Type': 'application/json' }`
-    - **Body**: `{ "text": "..." }` (The value of the `text` state variable).
+  - **Headers**: `{ 'Content-Type': 'application/json' }`
+  - **Body**: `{ "text": "..." }` (The value of the `text` state variable).
 - **Response**:
-    - **On Success (200 OK)**: The response body will be `{ data: GeneratedFlashcardDto[] }`. This `data` array must be stored in `sessionStorage` before redirecting.
-    - **On Error**: The response body will contain an error message (e.g., `{ "error": "..." }`).
+  - **On Success (200 OK)**: The response body will be `{ data: GeneratedFlashcardDto[] }`. This `data` array must be stored in `sessionStorage` before redirecting.
+  - **On Error**: The response body will contain an error message (e.g., `{ "error": "..." }`).
 
 ## 8. User Interactions
+
 1.  **Typing/Pasting Text**: As the user types in the `textarea`, the `text` state updates. The `WordCountValidator` component re-renders, showing the new count. The "Generate" button becomes enabled or disabled based on the `isValid` derived state.
 2.  **Submitting Text**: The user clicks the (now enabled) "Generate" button.
     - The `GenerationLoadingOverlay` appears (`isLoading` is set to `true`).
@@ -121,13 +133,15 @@ State will be managed locally within the `CreateView.tsx` component using React'
     - The error message is displayed in the UI.
 
 ## 9. Conditions and Validation
+
 - **Primary Condition**: The word count of the text in the `textarea` must be between 1,000 and 10,000, inclusive.
 - **Validation Location**: This is validated on the client-side within `CreateView.tsx` to provide immediate feedback.
 - **Effect on UI**:
-    - The `<button>` with `type="submit"` will have its `disabled` attribute set to `!isValid`.
-    - The `WordCountValidator` component will change its text color to red if `!isValid` to visually alert the user.
+  - The `<button>` with `type="submit"` will have its `disabled` attribute set to `!isValid`.
+  - The `WordCountValidator` component will change its text color to red if `!isValid` to visually alert the user.
 
 ## 10. Error Handling
+
 - **Client-Side**: The `fetch` call will be wrapped in a `try...catch` block.
 - **API Validation Error (400)**: If the API rejects the text (e.g., for length), the error message from the response body should be displayed.
 - **API Server Error (500)**: If the AI service fails, a generic, user-friendly message should be displayed, such as "Failed to generate flashcards. Please try again later."
@@ -135,6 +149,7 @@ State will be managed locally within the `CreateView.tsx` component using React'
 - **State Update**: In all error scenarios, `isLoading` must be set to `false` to hide the loading overlay and allow the user to try again. The `error` state is set to the appropriate message.
 
 ## 11. Implementation Steps
+
 1.  **Create Files**:
     - Create the Astro page: `src/pages/create.astro`.
     - Create a new directory: `src/components/views/create/`.

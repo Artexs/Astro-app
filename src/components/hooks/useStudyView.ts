@@ -35,8 +35,7 @@ export const useStudyView = () => {
       const { data }: { data: StudyFlashcardDto } = await response.json();
       setState({ currentCard: data, isLoading: false, error: null });
     } catch (e) {
-      const error =
-        e instanceof Error ? e.message : "An unexpected error occurred.";
+      const error = e instanceof Error ? e.message : "An unexpected error occurred.";
       setState({ currentCard: null, isLoading: false, error });
     }
   }, []);

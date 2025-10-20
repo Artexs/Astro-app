@@ -57,17 +57,17 @@ COMMENT ON COLUMN public.flashcards.state IS 'The current FSRS state of the card
 
 ### 2. Relationships
 
--   **`auth.users` to `public.flashcards`**: A **one-to-many** relationship.
-    -   One user can have many flashcards.
-    -   This is implemented via the `flashcards.user_id` foreign key, which references `auth.users(id)`.
-    -   The `ON UPDATE CASCADE` clause ensures that if a user's `id` in `auth.users` changes, the `user_id` in `flashcards` is updated automatically.
-    -   Data deletion is handled by a separate trigger (see Section 4) to ensure all of a user's flashcards are removed when their account is deleted.
+- **`auth.users` to `public.flashcards`**: A **one-to-many** relationship.
+  - One user can have many flashcards.
+  - This is implemented via the `flashcards.user_id` foreign key, which references `auth.users(id)`.
+  - The `ON UPDATE CASCADE` clause ensures that if a user's `id` in `auth.users` changes, the `user_id` in `flashcards` is updated automatically.
+  - Data deletion is handled by a separate trigger (see Section 4) to ensure all of a user's flashcards are removed when their account is deleted.
 
 ### 3. Indexes
 
 To ensure efficient querying, especially for fetching all cards belonging to a specific user, the following index is created:
 
--   **Index on `user_id`**: Improves the performance of lookups based on the user.
+- **Index on `user_id`**: Improves the performance of lookups based on the user.
 
 ```sql
 -- Index for user_id
@@ -121,7 +121,7 @@ CREATE TRIGGER on_auth_user_deleted
 
 ### 5. Additional Notes
 
--   **FSRS Columns**: The columns `due`, `stability`, `difficulty`, `lapses`, and `state` are included to support a future implementation of a Free Spaced Repetition Scheduler (FSRS). They are nullable and have sensible defaults so that the MVP can function without implementing the FSRS logic.
--   **No `created_at`/`updated_at`**: Timestamps for creation and updates were deemed unnecessary for the MVP requirements.
--   **No Source Text Storage**: The original source text used to generate flashcards will not be stored in the database.
--   **Random Card Selection**: For the study module, random card selection will be handled with `ORDER BY random()` in the SQL query, which is sufficient for the MVP.
+- **FSRS Columns**: The columns `due`, `stability`, `difficulty`, `lapses`, and `state` are included to support a future implementation of a Free Spaced Repetition Scheduler (FSRS). They are nullable and have sensible defaults so that the MVP can function without implementing the FSRS logic.
+- **No `created_at`/`updated_at`**: Timestamps for creation and updates were deemed unnecessary for the MVP requirements.
+- **No Source Text Storage**: The original source text used to generate flashcards will not be stored in the database.
+- **Random Card Selection**: For the study module, random card selection will be handled with `ORDER BY random()` in the SQL query, which is sufficient for the MVP.

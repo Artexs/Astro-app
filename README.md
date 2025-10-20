@@ -26,6 +26,7 @@ Students and lifelong learners often have large volumes of text (e.g., lecture n
 This application automates the creation of high-quality, relevant flashcards. Users can paste large blocks of text and receive AI-generated flashcards in a question-and-answer format. This allows users to spend more time studying and less time on preparation.
 
 The core workflow is simple:
+
 1.  **Paste Your Text**: Input your notes, articles, or any text into the application.
 2.  **Generate Cards**: The AI analyzes the text and generates a set of flashcards.
 3.  **Review & Save**: Quickly accept or reject the generated cards to build your personal collection.
@@ -43,32 +44,39 @@ The core workflow is simple:
 ## Tech Stack
 
 ### Frontend
-*   **[Astro](https://astro.build/)**: The primary web framework, used for its high-performance, content-focused architecture.
-*   **[React](https://react.dev/)**: Used for building interactive UI components ("islands of interactivity").
-*   **[TypeScript](https://www.typescriptlang.org/)**: Provides static typing for all JavaScript code.
-*   **[Tailwind CSS](https://tailwindcss.com/)**: A utility-first CSS framework for rapid UI development.
+
+- **[Astro](https://astro.build/)**: The primary web framework, used for its high-performance, content-focused architecture.
+- **[React](https://react.dev/)**: Used for building interactive UI components ("islands of interactivity").
+- **[TypeScript](https://www.typescriptlang.org/)**: Provides static typing for all JavaScript code.
+- **[Tailwind CSS](https://tailwindcss.com/)**: A utility-first CSS framework for rapid UI development.
 
 ### Backend & Database
-*   **[Supabase](https://supabase.com/)**: An all-in-one backend-as-a-service platform.
-    *   **Supabase Auth**: Manages user authentication (sign-up, login, password reset).
-    *   **Supabase Database**: A managed PostgreSQL database for storing user and flashcard data.
-*   **[Astro API Routes](https://docs.astro.build/en/guides/api/)**: Serverless endpoints for secure communication with the external AI service.
+
+- **[Supabase](https://supabase.com/)**: An all-in-one backend-as-a-service platform.
+  - **Supabase Auth**: Manages user authentication (sign-up, login, password reset).
+  - **Supabase Database**: A managed PostgreSQL database for storing user and flashcard data.
+- **[Astro API Routes](https://docs.astro.build/en/guides/api/)**: Serverless endpoints for secure communication with the external AI service.
 
 ### AI
-*   **External AI Service (TBD)**: An external API (e.g., OpenAI's GPT series, Google's Gemini) is used to generate questions and answers from text.
+
+- **External AI Service (TBD)**: An external API (e.g., OpenAI's GPT series, Google's Gemini) is used to generate questions and answers from text.
 
 ### Development & Tooling
-*   **[Node.js](https://nodejs.org/)**: The runtime environment.
-*   **[ESLint](https://eslint.org/)** & **[Prettier](https://prettier.io/)**: For code linting and formatting to ensure code quality.
+
+- **[Node.js](https://nodejs.org/)**: The runtime environment.
+- **[ESLint](https://eslint.org/)** & **[Prettier](https://prettier.io/)**: For code linting and formatting to ensure code quality.
 
 ## Getting Started Locally
 
 ### Prerequisites
+
 - **Node.js**: Version `22.14.0` (as specified in the `.nvmrc` file).
 - **Supabase Account**: You will need a Supabase project to handle authentication and database storage.
 
 ### Installation and Setup
+
 1.  **Clone the repository:**
+
     ```bash
     git clone <repository-url>
     cd <repository-name>
@@ -76,10 +84,13 @@ The core workflow is simple:
 
 2.  **Set up environment variables:**
     Create a `.env` file by copying the example file.
+
     ```bash
     cp .env.example .env
     ```
+
     Open the `.env` file and add your Supabase Project URL and Anon Key. You will also need to add the API key for the AI service you intend to use.
+
     ```env
     PUBLIC_SUPABASE_URL="your-supabase-url"
     PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
@@ -87,15 +98,18 @@ The core workflow is simple:
     ```
 
 3.  **Install dependencies:**
+
     ```bash
     npm install
     ```
 
 4.  **Set up local Supabase environment:**
     This command starts the local Supabase services (database, auth, etc.).
+
     ```bash
     npx supabase start
     ```
+
     You can access the local Supabase Studio at `http://localhost:54323`.
 
 5.  **Run the development server:**
@@ -136,6 +150,7 @@ This project is configured with AI development tools to enhance the development 
 ## Project Scope
 
 ### In Scope (MVP)
+
 - Email/Password authentication via Supabase.
 - Synchronous flashcard generation from text (1,000-10,000 words).
 - Text-only flashcards (Front/Back).
@@ -145,6 +160,7 @@ This project is configured with AI development tools to enhance the development 
 - Random-order study module.
 
 ### Out of Scope (Future Considerations)
+
 - Asynchronous/background flashcard generation.
 - Support for file uploads (e.g., PDF, DOCX) or URL inputs.
 - Flashcards with images, formatting, or other media.
