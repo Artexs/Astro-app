@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { type FlashcardListItemDto } from "@/lib/types";
 
 // DTO for pagination info, from GET /api/flashcards
@@ -31,14 +31,14 @@ export const useMyCards = () => {
     cardToDelete: null,
   });
 
-  const fetchNextPage = useCallback(async () => {
-    if (state.isLoading || !state.hasMore) return;
+  // Use a ref to track if the initial fetch has been performed
+  const initialFetchDone = useRef(false);
 
+  const fetchCards = useCallback(async (pageToFetch: number) => {
     setState((prevState) => ({ ...prevState, isLoading: true, error: null }));
 
     try {
-      const response = await fetch(`/api/flashcards?page=${state.page}&limit=30`);
-      console.log("test frontend: ", response);
+      const response = await fetch(`/api/flashcards?page=${pageToFetch}&limit=30`);
       if (!response.ok) {
         if (response.status === 401) {
           window.location.href = "/login";
@@ -49,16 +49,16 @@ export const useMyCards = () => {
 
       const { data, pagination }: { data: FlashcardListItemDto[]; pagination: PaginationDto } = await response.json();
 
-      // On initial load, if there are no cards, redirect to create page
-      if (state.page === 1 && pagination.totalItems === 0) {
+      // If it's the very first page and no items, redirect
+      if (pageToFetch === 1 && pagination.totalItems === 0) {
         window.location.href = "/create";
         return;
       }
 
       setState((prevState) => ({
         ...prevState,
-        cards: [...prevState.cards, ...data],
-        page: prevState.page + 1,
+        cards: pageToFetch === 1 ? data : [...prevState.cards, ...data],
+        page: pageToFetch + 1,
         hasMore: pagination.currentPage < pagination.totalPages,
         isLoading: false,
       }));
@@ -69,7 +69,22 @@ export const useMyCards = () => {
         error: error instanceof Error ? error.message : "An unknown error occurred",
       }));
     }
-  }, [state.isLoading, state.hasMore, state.page]);
+  }, []); // No dependencies here, as it takes `pageToFetch` as an argument
+
+  // Effect for initial data fetch
+  useEffect(() => {
+    if (!initialFetchDone.current) {
+      initialFetchDone.current = true;
+      fetchCards(1); // Fetch the first page on mount
+    }
+  }, [fetchCards]); // `fetchCards` is stable due to empty dependency array in its useCallback
+
+  // Function to be called by InfiniteScrollLoader
+  const fetchNextPage = useCallback(() => {
+    if (!state.isLoading && state.hasMore) {
+      fetchCards(state.page);
+    }
+  }, [state.isLoading, state.hasMore, state.page, fetchCards]);
 
   const requestDelete = (card: FlashcardListItemDto) => {
     setState((prevState) => ({ ...prevState, cardToDelete: card }));
@@ -112,13 +127,9 @@ export const useMyCards = () => {
     }
   };
 
-  useEffect(() => {
-    fetchNextPage();
-  }, [fetchNextPage]);
-
   return {
     state,
-    fetchNextPage,
+    fetchNextPage, // This is the one passed to InfiniteScrollLoader
     requestDelete,
     confirmDelete,
     cancelDelete,
