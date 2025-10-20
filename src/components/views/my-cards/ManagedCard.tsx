@@ -81,15 +81,9 @@ const ManagedCard: React.FC<ManagedCardProps> = ({ card, onDeleteRequest, showDe
         </Button>
       )}
       <div>
-        <p className="text-sm text-gray-500 mb-2">Question</p>
-        <p className="font-semibold mb-4 text-lg">{card.question}</p>
+        <p className="text-sm text-gray-500 mb-2">Answer</p>
+        <p className="font-semibold mb-4 text-lg">{card.answer}</p>
       </div>
-      {isExpanded && ( // Only show answer when expanded
-        <div>
-          <p className="text-sm text-gray-500 mb-2">Answer</p>
-          <p className="text-base">{card.answer}</p>
-        </div>
-      )}
     </div>
   );
 };
