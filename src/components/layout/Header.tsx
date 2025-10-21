@@ -53,7 +53,9 @@ const Header: React.FC<HeaderProps> = ({ isAuthenticated }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Account</DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <a href="/account">Account</a>
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -69,7 +71,7 @@ const Header: React.FC<HeaderProps> = ({ isAuthenticated }) => {
         <a href="/register">Sign Up</a>
       </Button>
       <Button asChild variant="default" size="default">
-        <a href="/forgot-password">Reset Password</a>
+        <a href="/forgot-password">Forgot Password</a>
       </Button>
     </>
   );
