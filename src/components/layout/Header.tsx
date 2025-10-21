@@ -17,8 +17,6 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ isAuthenticated }) => {
-
-
   const AuthenticatedNavigation: React.FC = () => (
     <>
       <Button asChild variant="default" size="lg">
@@ -64,15 +62,15 @@ const Header: React.FC<HeaderProps> = ({ isAuthenticated }) => {
 
   const UnauthenticatedLinks: React.FC = () => (
     <>
-      <a className="text-foreground hover:text-foreground/80" href="/login">
-        Login
-      </a>
-      <a
-        className="bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 rounded-md text-sm font-medium"
-        href="/signup"
-      >
-        Sign Up
-      </a>
+      <Button asChild variant="default" size="default">
+        <a href="/login">Login</a>
+      </Button>
+      <Button asChild variant="default" size="default">
+        <a href="/register">Sign Up</a>
+      </Button>
+      <Button asChild variant="default" size="default">
+        <a href="/forgot-password">Reset Password</a>
+      </Button>
     </>
   );
 
