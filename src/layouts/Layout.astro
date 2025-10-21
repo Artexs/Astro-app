@@ -2,7 +2,6 @@
 import "../styles/global.css";
 import Header from "../components/layout/Header.tsx";
 import PageWrapper from "../components/PageWrapper.astro";
-// import { createClient } from "../db/supabase.client.ts";
 
 interface Props {
   title?: string;
@@ -10,11 +9,8 @@ interface Props {
 
 const { title = "10x Astro Starter" } = Astro.props;
 
-// const supabase = createClient();
-// const {
-//   data: { session },
-// } = await supabase.auth.getSession();
-// const isAuthenticated = !!session;
+const { session } = Astro.locals;
+const isAuthenticated = !!session;
 ---
 
 <!doctype html>
@@ -27,7 +23,7 @@ const { title = "10x Astro Starter" } = Astro.props;
     <title>{title}</title>
   </head>
   <body>
-    <Header isAuthenticated={true} client:load />
+    <Header isAuthenticated={isAuthenticated} client:load />
     <PageWrapper>
       <slot />
     </PageWrapper>

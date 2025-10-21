@@ -10,14 +10,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import { createClient } from '@/db/supabase.client';
+import { supabaseClient } from "@/db/supabase.client";
 
 interface HeaderProps {
   isAuthenticated: boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({ isAuthenticated }) => {
-  // const supabase = createClient();
+
 
   const AuthenticatedNavigation: React.FC = () => (
     <>
@@ -35,7 +35,7 @@ const Header: React.FC<HeaderProps> = ({ isAuthenticated }) => {
 
   const AuthenticatedUserAccount: React.FC = () => {
     const handleLogout = async () => {
-      // const { error } = await supabase.auth.signOut();
+      const { error } = await supabaseClient.auth.signOut();
       if (!error) {
         window.location.href = "/login";
       } else {

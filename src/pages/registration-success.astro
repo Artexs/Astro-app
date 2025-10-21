@@ -1,0 +1,18 @@
+---
+import PageWrapper from '@/components/PageWrapper.astro';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+---
+
+<PageWrapper title="Registration Successful">
+  <div class="flex justify-center items-center mt-20">
+    <Card class="w-[400px]">
+      <CardHeader>
+        <CardTitle>Registration Successful</CardTitle>
+        <CardDescription>Please check your email to confirm your account.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p>A confirmation link has been sent to your email address. Please click the link to activate your account.</p>
+      </CardContent>
+    </Card>
+  </div>
+</PageWrapper>
