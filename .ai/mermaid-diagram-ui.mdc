@@ -1,0 +1,44 @@
+```mermaid
+sequenceDiagram
+    actor User
+    participant Browser
+    participant AstroServer
+    participant SupabaseAuth
+
+    %% Registration
+    User->>Browser: Navigates to /register
+    Browser->>AstroServer: GET /register
+    AstroServer-->>Browser: Serves register page with RegisterForm
+    User->>Browser: Fills and submits registration form
+    Browser->>SupabaseAuth: signUp({email, password})
+    SupabaseAuth-->>Browser: Returns success/error
+    SupabaseAuth->>User: Sends verification email
+
+    %% Login
+    User->>Browser: Navigates to /login
+    Browser->>AstroServer: GET /login
+    AstroServer-->>Browser: Serves login page with LoginForm
+    User->>Browser: Fills and submits login form
+    Browser->>SupabaseAuth: signInWithPassword({email, password})
+    SupabaseAuth-->>Browser: Returns session, sets auth cookie
+    Browser->>AstroServer: Navigates to /my-cards (protected)
+    AstroServer->>AstroServer: Middleware runs
+    AstroServer->>SupabaseAuth: Verifies session from cookie
+    SupabaseAuth-->>AstroServer: Session is valid
+    AstroServer-->>Browser: Serves /my-cards page
+
+    %% Accessing protected page (unauthenticated)
+    User->>Browser: Navigates to /my-cards
+    Browser->>AstroServer: GET /my-cards
+    AstroServer->>AstroServer: Middleware runs
+    AstroServer->>SupabaseAuth: Verifies session from cookie
+    SupabaseAuth-->>AstroServer: No valid session
+    AstroServer-->>Browser: Redirects to /login
+
+    %% Logout
+    User->>Browser: Clicks logout button
+    Browser->>AstroServer: POST /api/auth/logout
+    AstroServer->>SupabaseAuth: signOut()
+    SupabaseAuth-->>AstroServer: Invalidates session
+    AstroServer-->>Browser: Redirects to /login
+```
