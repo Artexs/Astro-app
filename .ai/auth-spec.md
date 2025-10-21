@@ -90,8 +90,8 @@ Thanks to the `output: "server"` configuration in `astro.config.mjs` and the mid
 ### 4.1. Configuration
 
 -   The following variables will be added to the environment files (`.env`):
-    -   `PUBLIC_SUPABASE_URL`: The public URL of the Supabase project.
-    -   `PUBLIC_SUPABASE_ANON_KEY`: The public `anon` key of the Supabase project.
+    -   `SUPABASE_URL`: The public URL of the Supabase project.
+    -   `SUPABASE_KEY`: The public `anon` key of the Supabase project.
 -   A central Supabase client will be created in `src/db/supabase.client.ts`, which will re-export clients for the client-side and server-side, using the `@supabase/supabase-js` and `@supabase/ssr` libraries.
 
 ### 4.2. Client-Side Integration (React Components)
