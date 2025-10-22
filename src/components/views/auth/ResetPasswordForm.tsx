@@ -44,7 +44,7 @@ export default function ResetPasswordForm() {
               <AlertDescription>{errors.general}</AlertDescription>
             </Alert>
           )}
-          <form onSubmit={handleSubmit}>
+          <form aria-label="Reset Password Form" onSubmit={handleSubmit}>
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="password">New Password</Label>
