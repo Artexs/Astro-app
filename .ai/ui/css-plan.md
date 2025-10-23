@@ -1,52 +1,73 @@
-### Analysis of `global.css`
+# CSS Refactoring Plan
 
-The current stylesheet uses a custom set of design tokens for colors and corner radii, implemented as CSS custom properties for both light and dark modes. It leverages Tailwind CSS for utility classes and base styling. The colors are defined using the modern `oklch()` color function, and a prominent feature is the complex gradient background on the `<body>`.
+## 1. Overview & Goals
+This document outlines the complete refactoring plan for the project's CSS. The primary goal is to rebuild the styling from scratch, establishing a modern, maintainable, and performant system.
 
-To align with Fluent UI 2, a systematic update of these foundational tokens is required. The goal is to replace the current bespoke design system with Fluent UI's well-defined and accessible tokens.
+The core strategy is to use a utility-first approach with Tailwind CSS, underpinned by a consistent design token philosophy inspired by Fluent UI 2. This will replace the previous inconsistent styles and provide a solid foundation for all current and future UI development, focusing on a clean aesthetic, responsiveness, and an improved developer experience.
 
-### Change Plan: Adopting Fluent UI 2 Tokens
+## 2. Foundational Strategy
 
-The transformation will focus on updating the core design tokens in `:root` and `.dark` scopes. This will ensure the changes propagate throughout the application wherever these variables are used.
+### Design Tokens (Colors & Radius)
+- A new, consistent color palette and radius scale will be defined as CSS custom properties (variables) in `src/styles/global.css`.
+- Variables will be defined in `:root` for light mode and overridden in a `.dark` class for dark mode.
+- This system will be the single source of truth for all colors (background, foreground, primary, destructive), borders, and shadows.
 
-#### 1. Color System Overhaul
+### Base Styles & Background
+- The `body` background will be a subtle, two-tone radial gradient to add depth without distracting from the content. It will be unified across the entire application.
+  ```css
+  body {
+    background: radial-gradient(circle, var(--primary-muted) 0%, var(--background) 70%);
+  }
+  ```
+- Base styles in `@layer base` will set the default font family and ensure the base text color is `var(--foreground)`.
 
-The most critical change is to map the existing color variables to the Fluent UI 2 color palette. This will not only provide the look and feel of Fluent but also ensure accessibility, as Fluent's tokens are designed with sufficient contrast ratios.
+### Typography & Icons
+- **Fonts:** A modern variable font (e.g., "Satoshi" or "Inter") will be self-hosted to ensure performance and visual consistency.
+- **Icons:** The `lucide-react` library will be used for all icons. It is tree-shakable, ensuring that only the icons used in the project are included in the final bundle.
 
-**Light Mode (`:root`) Modifications:**
+### Tailwind CSS Integration
+- The `tailwind.config.mjs` file will be extended to recognize the new CSS design tokens (e.g., `colors: { primary: 'var(--primary)' }`).
+- The official `prettier-plugin-tailwindcss` will be installed to automatically sort utility classes, ensuring code consistency and readability.
 
-*   `--background`: Replace `oklch(1 0 0)` with Fluent's `colorNeutralBackground1` (`#FFFFFF`).
-*   `--foreground`: Replace `oklch(0.145 0 0)` with `colorNeutralForeground1` (`#242424`).
-*   `--card`, `--popover`: Replace with `colorNeutralBackground1` (`#FFFFFF`) or `colorNeutralBackground2` (`#FAFAFA`) for a subtle distinction.
-*   `--primary`: Replace with a Fluent brand color, like `colorBrandBackground` (`#0F6CBD`).
-*   `--primary-foreground`: Replace with `colorNeutralForegroundOnBrand` (`#FFFFFF`).
-*   `--border`, `--input`: Replace with `colorNeutralStroke1` (`#D1D1D1`).
-*   `--destructive`: Replace with a Fluent error/destructive color, like `colorPaletteRedBackground3` (`#A80000`).
+## 3. Layout System
 
-**Dark Mode (`.dark`) Modifications:**
+### Main Page Structure
+- The primary application layout (`src/layouts/Layout.astro`) will use CSS Flexbox to create a "sticky footer" design (`flex flex-col min-h-screen`). The main content area will grow to fill available space (`flex-grow`).
 
-*   `--background`: Replace `oklch(0.145 0 0)` with `colorNeutralBackground1` (`#292929`).
-*   `--foreground`: Replace `oklch(0.985 0 0)` with `colorNeutralForeground1` (`#FFFFFF`).
-*   `--card`, `--popover`: Replace with `colorNeutralBackground2` (`#333333`).
-*   `--primary`: Replace with the dark theme brand color, `colorBrandBackground` (`#2899F5`).
-*   `--border`, `--input`: Replace with `colorNeutralStroke1` (`#424242`).
-*   `--destructive`: Replace with the dark theme destructive color, like `colorPaletteRedForeground1` (`#F1707B`).
+### Responsive Grids
+- Responsive layouts, particularly the 3-column flashcard grid, will be implemented using CSS Grid (`display: grid`).
+- Tailwind’s standard, mobile-first breakpoints (`sm`, `md`, `lg`, `xl`) will be used to adapt the grid for different screen sizes (e.g., `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`).
 
-#### 2. Corner Radius (Shape) Adjustment
+## 4. Component-Specific Styling
 
-Fluent UI 2 uses a subtle and consistent corner radius scale. The current base radius is `0.625rem` (10px), which is larger than Fluent's standard.
+### Forms & Cards
+- All forms (Login, Register, Account) will be wrapped in the `Card` component to preserve their established "box" look, with a distinct background (`bg-card`).
+- Flashcards (`ManagedCard`, `ReviewableCard`) will also use the `Card` component as their base style, ensuring a consistent look.
 
-*   **Action:** Update the `--radius` variable to a value from the Fluent UI 2 ramp, such as `0.375rem` (6px) or `0.25rem` (4px). This change will automatically propagate to the derived `--radius-sm`, `--radius-md`, etc., creating a more refined and consistent shape language across components like buttons and cards.
+### Interactive States & Animations
+- **Card Flip:** The `StudyCard` will feature a 3D flip animation using CSS transforms (`transform-style: preserve-3d`, `perspective`, `rotateY`) and transitions.
+- **Hover/Focus:** All interactive elements will have clear `hover:` and `focus-visible:` states (e.g., changing shadows, border colors, or showing a ring) for better usability.
+- **Transitions:** Animation durations will be standardized in the Tailwind config (e.g., `duration-fast: '150ms'`) to create a consistent rhythm across the UI.
 
-#### 3. Base Style Simplification
+### Word Count Validator
+- The text color will be dynamically updated based on state:
+  - **Default:** Neutral color.
+  - **Valid (1000-10000 words):** Green (`text-green-500`).
+  - **Invalid (on submit attempt):** Red (`text-destructive`).
 
-The current `body` background is a prominent multi-color gradient. While visually interesting, it is not characteristic of Fluent UI's focus on clean, layered interfaces.
+### Modals & Overlays
+- Overlays (for modals or loading states) will use `position: fixed`, `inset-0`, a high `z-index`, and a `backdrop-blur-sm` effect for a modern, layered feel.
 
-*   **Action:** Remove the `background: linear-gradient(...)` from the `body` style in `@layer base`. The body should instead inherit the primary background color by setting `background-color: var(--background)`. This will create a solid, neutral canvas that improves content readability and aligns with modern application design.
+### Empty States
+- A reusable `EmptyState.tsx` component will be created to handle views with no content (e.g., no cards to study). It will feature an icon, a heading, descriptive text, and a call-to-action `Button`.
 
-#### 4. Typography (Recommendation)
+## 5. Performance & Maintainability
 
-While not directly controlled in `global.css`, typography is a core part of Fluent UI.
+### CSS Optimization
+- Tailwind's JIT (Just-In-Time) compiler will automatically purge unused CSS classes from the production build, keeping the final stylesheet size minimal.
 
-*   **Action:** It is recommended to update the Tailwind configuration (`tailwind.config.js`) to use "Segoe UI Variable" or a similar system font stack as the default font family. Furthermore, the theme's font sizes should be mapped to Fluent's type ramp to ensure a consistent and accessible typographic hierarchy.
+### Text Overflow
+- The `@tailwindcss/line-clamp` plugin will be used to truncate long text in flashcard answers when they are displayed in a grid, ensuring a uniform layout.
 
-By implementing these token-level changes, the application will adopt the modern, accessible, and cohesive aesthetic of Fluent UI 2 while maintaining the existing structure of the codebase.
+### Code Style
+- The Prettier plugin for Tailwind CSS will enforce a consistent and logical order for utility classes in all source files.
