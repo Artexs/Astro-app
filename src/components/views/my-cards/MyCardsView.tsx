@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useMyCards } from "@/components/hooks/useMyCards";
 import ManagedCard from "./ManagedCard";
 import InfiniteScrollLoader from "./InfiniteScrollLoader";
@@ -19,12 +19,6 @@ const MyCardsView: React.FC = () => {
   if (state.error && !state.cardToDelete) {
     return <div className="text-red-500 text-center p-4">Error: {state.error}</div>;
   }
-
-  useEffect(() => {
-    if (!state.isLoading && state.cards.length === 0 && !state.error) {
-      window.location.href = '/create';
-    }
-  }, [state.isLoading, state.cards.length, state.error]);
 
   return (
     <div className="p-4">
