@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
+    "dev:e2e": "astro dev --mode test",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -11,7 +12,15 @@
     "lint2": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "test": "vitest run --coverage"
+    "test": "vitest run --coverage",
+    "db:migrate": "npx supabase migration up",
+    "db:migrate:e2e": "cd supabase_e2e && npx supabase migration up",
+    "supabase:start": "npx supabase start",
+    "supabase:stop": "npx supabase stop",
+    "supabase:start:e2e": "npx supabase --workdir supabase_e2e start",
+    "supabase:stop:e2e": "npx supabase --workdir supabase_e2e stop",
+    "supabase:start:all": "npm run supabase:start && npm run supabase:start:e2e",
+    "supabase:stop:all": "npm run supabase:stop && npm run supabase:stop:e2e"
   },
   "dependencies": {
     "@astrojs/node": "^9.4.3",
