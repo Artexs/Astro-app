@@ -51,7 +51,13 @@ class OpenAiService {
       }
 
       if (response_format?.type === "json_object") {
-        return JSON.parse(content);
+        try {
+          return JSON.parse(content);
+        } catch (jsonError) {
+          console.error("Error parsing JSON from OpenAI API:", jsonError);
+          console.error("Raw OpenAI API response content:", content);
+          throw jsonError;
+        }
       }
 
       return content;
