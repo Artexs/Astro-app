@@ -2,17 +2,17 @@ import { type Page, type Locator, expect } from '@playwright/test';
 
 export class HomePage {
   readonly page: Page;
-  readonly getStartedLink: Locator;
-  readonly gettingStartedHeader: Locator;
-  readonly pomLink: Locator;
-  readonly tocList: Locator;
+  readonly introText: Locator;
+  readonly techStackSection: Locator;
+  readonly toolsSection: Locator;
+  readonly conclusionText: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.getStartedLink = page.getByRole('link', { name: 'Get started' });
-    this.gettingStartedHeader = page.getByRole('heading', { name: 'Installation' });
-    this.pomLink = page.getByRole('link', { name: 'Playwright Test' }).first();
-    this.tocList = page.locator('div.toc:has-text("Table of Contents")');
+    this.introText = page.getByTestId('intro-text');
+    this.techStackSection = page.getByTestId('tech-stack-section');
+    this.toolsSection = page.getByTestId('tools-section');
+    this.conclusionText = page.getByTestId('conclusion-text');
   }
 
   async goto() {
@@ -24,6 +24,6 @@ export class HomePage {
   }
 
   async getHeader() {
-    return this.page.getByRole('heading', { name: 'Witaj w 10xDevs Astro Starter!' });
+    return this.page.getByTestId('welcome-header');
   }
 }

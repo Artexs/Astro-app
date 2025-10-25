@@ -25,6 +25,8 @@ export default function LoginForm() {
     handleSubmit,
   } = useLogin();
 
+  console.log("LoginForm error prop:", error); // Added console.log
+
   return (
     <div className="flex justify-center items-center mt-20">
       <Card className="w-[400px]">
@@ -34,7 +36,7 @@ export default function LoginForm() {
         </CardHeader>
         <CardContent>
           {error && (
-            <Alert variant="destructive" className="mb-4">
+            <Alert variant="destructive" className="mb-4" data-testid="login-error">
               <AlertTitle>Login Failed</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
@@ -50,6 +52,7 @@ export default function LoginForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  data-testid="email-input"
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
@@ -61,6 +64,7 @@ export default function LoginForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  data-testid="password-input"
                 />
               </div>
             </div>
@@ -72,6 +76,7 @@ export default function LoginForm() {
             form="login-form"
             className="w-full"
             disabled={isLoading}
+            data-testid="login-button"
           >
             {isLoading ? "Logging in..." : "Login"}
           </Button>
