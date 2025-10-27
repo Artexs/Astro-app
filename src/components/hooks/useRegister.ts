@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/db/supabase.client";
+import { supabaseClient } from "@/db/supabase.client";
 
 interface RegisterErrors {
   email?: string;
@@ -38,7 +38,7 @@ export function useRegister() {
     setIsLoading(true);
     setErrors({});
 
-    const { error } = await supabase.auth.signUp({
+    const { error } = await supabaseClient.auth.signUp({
       email,
       password,
     });
