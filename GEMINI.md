@@ -337,4 +337,4 @@ The project is configured with AI development tools to enhance the development e
 - When suggesting fixes for errors, explain the root cause and how the solution addresses it to build understanding. Ask for confirmation before proceeding.
 - Offer introducing basic test cases that demonstrate how the code works and common edge cases to consider.
 
-DO NOT RUN lint automatically
+DO NOT RUN lint automatically.
