@@ -5,6 +5,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   test: {
+    exclude: ['src/test_e2e/**', 'node_modules/**'],
     environment: 'jsdom',
     globals: true,
     setupFiles: './src/__tests__/setupTests.ts',
@@ -20,6 +21,7 @@ export default defineConfig({
         'src/env.d.ts',
         '**/*.astro',
         '**/*.d.ts',
+        'src/test_e2e/**',
       ],
       include: [
         'src/lib/services/**', 
