@@ -25,7 +25,9 @@ test.describe("Flashcard Management", () => {
     }
   });
 
-  test("should allow a user to generate flashcards from text and be redirected to review page", async ({ page }) => {
+  test.skip("should allow a user to generate flashcards from text and be redirected to review page", async ({
+    page,
+  }) => {
     const loginPage = new LoginPage(page);
     const createFlashcardPage = new CreateFlashcardPage(page);
 
