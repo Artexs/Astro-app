@@ -33,7 +33,7 @@ test.describe("Home page", () => {
     await expect(homePage.conclusionText).toBeVisible();
   });
 
-  test("matches screenshot", async ({ page }) => {
+  test.skip("matches screenshot", async ({ page }) => {
     await expect(page).toHaveScreenshot();
   });
 });

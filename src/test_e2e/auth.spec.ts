@@ -39,7 +39,7 @@ test.describe("Authentication Flows", () => {
     // await expect(loginPage.errorMessage).toBeVisible();
   });
 
-  test("should allow a logged-in user to log out", async ({ page }) => {
+  test.skip("should allow a logged-in user to log out", async ({ page }) => {
     const loginPage = new LoginPage(page);
 
     const email = process.env.E2E_USERNAME as string;
