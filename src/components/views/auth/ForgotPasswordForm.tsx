@@ -1,35 +1,19 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useForgotPassword } from "@/components/hooks/useForgotPassword"; // Import the hook
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"; // Import Alert components
 
 export default function ForgotPasswordForm() {
-  const {
-    email,
-    setEmail,
-    isLoading,
-    message,
-    errors,
-    handleSubmit,
-  } = useForgotPassword();
+  const { email, setEmail, isLoading, message, errors, handleSubmit } = useForgotPassword();
 
   return (
     <div className="flex justify-center items-center mt-20">
       <Card className="w-[400px]">
         <CardHeader>
           <CardTitle>Forgot Password</CardTitle>
-          <CardDescription>
-            Enter your email address and we'll send you a link to reset your password.
-          </CardDescription>
+          <CardDescription>Enter your email address and we'll send you a link to reset your password.</CardDescription>
         </CardHeader>
         <CardContent>
           {message && (
@@ -65,7 +49,9 @@ export default function ForgotPasswordForm() {
                 {isLoading ? "Sending..." : "Send Reset Link"}
               </Button>
               <div className="text-sm text-muted-foreground">
-                <a href="/login" className="underline">Back to login</a>
+                <a href="/login" className="underline">
+                  Back to login
+                </a>
               </div>
             </CardFooter>
           </form>

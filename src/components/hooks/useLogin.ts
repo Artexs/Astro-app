@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { supabaseClient } from "@/db/supabase.client";
 
@@ -28,7 +27,6 @@ export function useLogin() {
       // On success, Supabase client handles the session and the page will redirect.
       // For Astro, a full page reload is often best to re-evaluate server-side logic.
       window.location.href = "/my-cards";
-
     } catch (catchError: any) {
       setError(catchError.message || "An unexpected error occurred.");
     } finally {

@@ -1,12 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useChangePassword } from "@/components/hooks/useChangePassword"; // Import the hook
@@ -81,7 +74,9 @@ export default function ChangePasswordForm() {
               {errors.confirmNewPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmNewPassword}</p>}
             </div>
           </div>
-          <CardFooter className="flex justify-end p-0 pt-6"> {/* Adjust padding */}
+          <CardFooter className="flex justify-end p-0 pt-6">
+            {" "}
+            {/* Adjust padding */}
             <Button type="submit" disabled={isLoading}>
               {isLoading ? "Changing..." : "Change Password"}
             </Button>

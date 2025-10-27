@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+import { vi } from "vitest";
 
 export const mockOpenAI = {
   chat: {
@@ -7,7 +7,7 @@ export const mockOpenAI = {
         choices: [
           {
             message: {
-              content: JSON.stringify({ flashcards: [{ question: 'Q1', answer: 'A1' }] }),
+              content: JSON.stringify({ flashcards: [{ question: "Q1", answer: "A1" }] }),
             },
           },
         ],
@@ -17,6 +17,6 @@ export const mockOpenAI = {
 };
 
 // Mock the OpenAI constructor
-vi.mock('openai', () => ({
+vi.mock("openai", () => ({
   default: vi.fn(() => mockOpenAI),
 }));

@@ -30,8 +30,7 @@ export function useChangePassword() {
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
     if (!passwordRegex.test(newPassword)) {
-      newErrors.newPassword =
-        "New password must be 8+ characters with uppercase, lowercase, and a number.";
+      newErrors.newPassword = "New password must be 8+ characters with uppercase, lowercase, and a number.";
     }
 
     if (Object.keys(newErrors).length > 0) {

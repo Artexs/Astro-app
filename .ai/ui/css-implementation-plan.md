@@ -1,14 +1,17 @@
 # CSS Implementation Plan
 
 ## Overview
+
 This document provides a detailed, step-by-step guide for refactoring the project's entire CSS structure. The plan is to build a new, modern styling system using Tailwind CSS, based on the decisions from our conversation.
 
 ---
 
 ## Phase 1: Foundational Setup
+
 This phase covers the core configuration and global styles that will underpin the entire project.
 
 ### Step 1.1: Define Design Tokens in `global.css`
+
 1.  **Clear Existing Content:** Open `src/styles/global.css` and remove its current content.
 2.  **Add CSS Variables:** Define a new set of CSS custom properties for the design system. This includes separate palettes for light (`:root`) and dark (`.dark`) modes.
 
@@ -38,6 +41,7 @@ This phase covers the core configuration and global styles that will underpin th
     ```
 
 ### Step 1.2: Implement the Global Background Style
+
 1.  In `src/styles/global.css`, within the `@layer base` rule, style the `body` element.
 2.  Apply the subtle radial gradient discussed.
 
@@ -52,6 +56,7 @@ This phase covers the core configuration and global styles that will underpin th
     ```
 
 ### Step 1.3: Configure Tailwind CSS
+
 1.  **Edit `tailwind.config.mjs`:** Open the Tailwind configuration file.
 2.  **Extend Theme:** Modify the `theme.extend` object to make Tailwind aware of the new CSS variables. This allows using classes like `bg-primary`.
 
@@ -81,6 +86,7 @@ This phase covers the core configuration and global styles that will underpin th
     ```
 
 ### Step 1.4: Install & Configure Helper Plugins
+
 1.  **Open Terminal:** Run the following commands to install the necessary development dependencies.
     ```bash
     npm install -D prettier-plugin-tailwindcss @tailwindcss/line-clamp
@@ -100,17 +106,21 @@ This phase covers the core configuration and global styles that will underpin th
 ---
 
 ## Phase 2: Component Styling & Refactoring
+
 This phase focuses on applying the new design system to the application's components.
 
 ### Step 2.1: Refactor Core UI Components
+
 1.  Go through each core `shadcn` component in `src/components/ui/` (e.g., `button.tsx`, `input.tsx`, `card.tsx`).
 2.  Update the `cva` variants to use the new semantic color names defined in the Tailwind config (e.g., `bg-primary`, `border-destructive`).
 
 ### Step 2.2: Style Forms and Their Containers
+
 1.  For all form pages (`/login`, `/register`, `/account`, etc.), ensure the main form element is wrapped within the `Card` component (`<Card className="w-full max-w-md">...</Card>`).
 2.  This will give the forms the desired "box" appearance, visually separating them from the new global gradient background.
 
 ### Step 2.3: Implement Flashcard Styles
+
 1.  **Base Style:** Use the `Card` component as the base for `ManagedCard.tsx` and `ReviewableCard.tsx`.
 2.  **Grid Layout:** In the parent views (`MyCardsView.tsx`, `ReviewView.tsx`), apply the responsive grid classes to the container: `grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6`.
 3.  **Text Overflow:** In `ManagedCard.tsx`, apply the `line-clamp` utility to the answer text to prevent long text from breaking the grid layout: `className="line-clamp-3"`.
@@ -118,9 +128,11 @@ This phase focuses on applying the new design system to the application's compon
 ---
 
 ## Phase 3: Advanced Interactivity & Animation
+
 This phase implements the more complex, dynamic styling requirements.
 
 ### Step 3.1: Create the 3D Card Flip Animation
+
 1.  **Target `StudyCard.tsx`:** This styling is specific to the study view.
 2.  **Add CSS to `global.css`:** Add the necessary structural CSS for the 3D effect.
     ```css
@@ -142,19 +154,21 @@ This phase implements the more complex, dynamic styling requirements.
     - Back face `className`: `card-3d-face card-3d-back`
 
 ### Step 3.2: Implement Word Count Validator Logic
+
 1.  **Target `WordCountValidator.tsx`:** This component will need to receive props for the word count and whether a submission has been attempted.
 2.  **Apply Conditional Classes:** Use a function to determine the correct text color class.
     ```javascript
     const getTextColor = (count, attemptedSubmit) => {
       const isValid = count >= 1000 && count <= 10000;
-      if (isValid) return 'text-green-500';
-      if (attemptedSubmit && !isValid) return 'text-destructive';
-      return 'text-neutral-500'; // Default neutral color
+      if (isValid) return "text-green-500";
+      if (attemptedSubmit && !isValid) return "text-destructive";
+      return "text-neutral-500"; // Default neutral color
     };
     // <p className={getTextColor(wordCount, hasAttemptedSubmit)}>...</p>
     ```
 
 ### Step 3.3: Create the `EmptyState` Component
+
 1.  **Create `src/components/ui/EmptyState.tsx`:** Build a new reusable component.
 2.  **Structure and Style:** Use Flexbox to center the content. Include a `lucide-react` icon, a heading, a paragraph, and a `Button` component for the call-to-action.
     ```jsx
@@ -163,6 +177,6 @@ This phase implements the more complex, dynamic styling requirements.
       <Icon size={48} />
       <h3 className="font-bold text-lg">No Cards Found</h3>
       <p className="text-muted-foreground">Get started by creating your first set of flashcards.</p>
-      <Button onClick={() => window.location.href = '/create'}>Create Cards</Button>
+      <Button onClick={() => (window.location.href = "/create")}>Create Cards</Button>
     </div>
     ```

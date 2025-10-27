@@ -19,13 +19,11 @@ describe("flashcard.service", () => {
     it("should create a flashcard successfully", async () => {
       const mockFlashcard = { id: 1, user_id: userId, question: "Q", answer: "A", created_at: "" };
       mockSupabaseClient.from.mockReturnValue({
-        insert: vi
-          .fn()
-          .mockReturnValue({
-            select: vi
-              .fn()
-              .mockReturnValue({ single: vi.fn().mockResolvedValueOnce({ data: mockFlashcard, error: null }) }),
-          }),
+        insert: vi.fn().mockReturnValue({
+          select: vi
+            .fn()
+            .mockReturnValue({ single: vi.fn().mockResolvedValueOnce({ data: mockFlashcard, error: null }) }),
+        }),
       });
 
       const result = await createFlashcard(mockSupabaseClient as any, userId, "Q", "A");
@@ -40,13 +38,9 @@ describe("flashcard.service", () => {
     it("should throw an error if flashcard creation fails", async () => {
       const mockError = { message: "Failed to create flashcard" };
       mockSupabaseClient.from.mockReturnValue({
-        insert: vi
-          .fn()
-          .mockReturnValue({
-            select: vi
-              .fn()
-              .mockReturnValue({ single: vi.fn().mockResolvedValueOnce({ data: null, error: mockError }) }),
-          }),
+        insert: vi.fn().mockReturnValue({
+          select: vi.fn().mockReturnValue({ single: vi.fn().mockResolvedValueOnce({ data: null, error: mockError }) }),
+        }),
       });
 
       await expect(createFlashcard(mockSupabaseClient as any, userId, "Q", "A")).rejects.toThrow(mockError.message);
@@ -137,7 +131,8 @@ describe("flashcard.service", () => {
       const mockError = { message: "Failed to fetch count" };
 
       mockSupabaseClient.from.mockReturnValue({
-        select: vi.fn()
+        select: vi
+          .fn()
           .mockImplementationOnce((columns) => {
             if (columns === "id,question,answer,state") {
               return {
@@ -198,7 +193,8 @@ describe("flashcard.service", () => {
       const mockFlashcard = { id: 1, question: "Q1", answer: "A1" };
 
       mockSupabaseClient.from.mockReturnValue({
-        select: vi.fn()
+        select: vi
+          .fn()
           .mockImplementationOnce((columns) => {
             if (columns === "*") {
               return {
@@ -229,7 +225,8 @@ describe("flashcard.service", () => {
 
     it("should throw an error if no flashcards are found", async () => {
       mockSupabaseClient.from.mockReturnValue({
-        select: vi.fn()
+        select: vi
+          .fn()
           .mockImplementationOnce((columns) => {
             if (columns === "*") {
               return {
@@ -294,7 +291,8 @@ describe("flashcard.service", () => {
       const mockError = { message: "Failed to fetch random flashcard" };
 
       mockSupabaseClient.from.mockReturnValue({
-        select: vi.fn()
+        select: vi
+          .fn()
           .mockImplementationOnce((columns) => {
             if (columns === "*") {
               return {

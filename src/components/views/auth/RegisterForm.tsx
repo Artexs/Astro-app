@@ -1,14 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useRegister } from "@/components/hooks/useRegister";
@@ -32,9 +25,7 @@ export default function RegisterForm() {
       <Card className="w-[400px]">
         <CardHeader>
           <CardTitle>Create an account</CardTitle>
-          <CardDescription>
-            Enter your email and password to get started.
-          </CardDescription>
+          <CardDescription>Enter your email and password to get started.</CardDescription>
         </CardHeader>
         <CardContent>
           {errors.general && (
@@ -85,12 +76,7 @@ export default function RegisterForm() {
           </form>
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
-          <Button
-            type="submit"
-            form="register-form"
-            className="w-full"
-            disabled={isLoading}
-          >
+          <Button type="submit" form="register-form" className="w-full" disabled={isLoading}>
             {isLoading ? "Creating account..." : "Create Account"}
           </Button>
           <div className="text-sm text-muted-foreground">

@@ -1,28 +1,13 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useResetPassword } from "@/components/hooks/useResetPassword"; // Import the hook
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"; // Import Alert components
 
 export default function ResetPasswordForm() {
-  const {
-    password,
-    setPassword,
-    confirmPassword,
-    setConfirmPassword,
-    isLoading,
-    message,
-    errors,
-    handleSubmit,
-  } = useResetPassword();
+  const { password, setPassword, confirmPassword, setConfirmPassword, isLoading, message, errors, handleSubmit } =
+    useResetPassword();
 
   return (
     <div className="flex justify-center items-center mt-20">

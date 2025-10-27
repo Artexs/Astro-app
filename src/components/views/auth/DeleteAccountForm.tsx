@@ -1,13 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
@@ -25,14 +18,7 @@ import { useDeleteAccount } from "@/components/hooks/useDeleteAccount"; // Impor
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"; // Import Alert components
 
 export default function DeleteAccountForm() {
-  const {
-    passwordConfirm,
-    setPasswordConfirm,
-    isLoading,
-    message,
-    errors,
-    handleDeleteAccount,
-  } = useDeleteAccount();
+  const { passwordConfirm, setPasswordConfirm, isLoading, message, errors, handleDeleteAccount } = useDeleteAccount();
 
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
 
@@ -41,10 +27,8 @@ export default function DeleteAccountForm() {
       <CardHeader>
         <CardTitle>Delete Account</CardTitle>
         <CardDescription>
-          This action cannot be undone. This will permanently delete your
-          account, all associated flashcards, and remove your data from our
-          servers.
-          You will lose all your progress and data.
+          This action cannot be undone. This will permanently delete your account, all associated flashcards, and remove
+          your data from our servers. You will lose all your progress and data.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -63,9 +47,7 @@ export default function DeleteAccountForm() {
         <form>
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="password-confirm">
-                To confirm, type your password
-              </Label>
+              <Label htmlFor="password-confirm">To confirm, type your password</Label>
               <Input
                 id="password-confirm"
                 type="password"
@@ -89,9 +71,8 @@ export default function DeleteAccountForm() {
             <AlertDialogHeader>
               <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                account and all associated data, including all your flashcards.
-                You will lose all your progress and data.
+                This action cannot be undone. This will permanently delete your account and all associated data,
+                including all your flashcards. You will lose all your progress and data.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

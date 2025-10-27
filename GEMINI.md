@@ -58,8 +58,6 @@ The project is configured with AI development tools to enhance the development e
   ├── public/         # Public assets
   ```
 
-
-
 # AI Rules for {{project-name}}
 
 {{project-description}}
@@ -81,7 +79,6 @@ The project is configured with AI development tools to enhance the development e
 - Implement test hooks for setup and teardown
 - Use expect assertions with specific matchers
 - Leverage parallel execution for faster test runs
-
 
 ### Guidelines for UNIT
 
@@ -113,7 +110,7 @@ The project is configured with AI development tools to enhance the development e
 - Always use `npm ci` for Node-based dependency setup
 - Extract common steps into composite actions in separate files
 - Once you're done, as a final step conduct the following: for each public action always use <tool>"Run Terminal"</tool> to see what is the most up-to-date version (use only major version) - extract tag_name from the response:
-- ```bash curl -s https://api.github.com/repos/{owner}/{repo}/releases/latest ```
+- `bash curl -s https://api.github.com/repos/{owner}/{repo}/releases/latest `
 
 ## DATABASE
 
@@ -194,7 +191,6 @@ The project is configured with AI development tools to enhance the development e
 - Use Query Keys structuring pattern ([entity, params]) for better organization and automatic refetching
 - Implement query invalidation strategies to keep data fresh after mutations
 
-
 ### Guidelines for ASTRO
 
 #### ASTRO_CODING_STANDARDS
@@ -220,9 +216,8 @@ The project is configured with AI development tools to enhance the development e
 - Use client:only for components that should never render on the server
 - Leverage client:idle for non-critical UI elements that can wait until the browser is idle
 - Implement client:load for components that should hydrate immediately
-- Use Astro's transition:* directives for view transitions between pages
+- Use Astro's transition:\* directives for view transitions between pages
 - Leverage props for passing data from Astro to framework components
-
 
 ### Guidelines for STYLING
 
@@ -251,7 +246,6 @@ The project is configured with AI development tools to enhance the development e
 - Implement the css prop for one-off styling needs
 - Use the & character for nesting selectors
 - Leverage the keyframes helper for animations
-
 
 ### Guidelines for ACCESSIBILITY
 
@@ -290,7 +284,6 @@ The project is configured with AI development tools to enhance the development e
 - Configure consistent quote style and semicolon usage to match team conventions
 - Implement CI checks to ensure all committed code adheres to the defined style
 
-
 ### Guidelines for ARCHITECTURE
 
 #### MICROSERVICES
@@ -310,7 +303,6 @@ The project is configured with AI development tools to enhance the development e
 - Use interfaces (ports) and implementations (adapters) to isolate external dependencies
 - Create use cases that orchestrate entity interactions for specific business operations
 - Implement mappers to transform data between layers to maintain separation of concerns
-
 
 ### Guidelines for VERSION_CONTROL
 
@@ -332,7 +324,6 @@ The project is configured with AI development tools to enhance the development e
 - Implement CODEOWNERS files to automatically assign reviewers based on code paths
 - Use GitHub Projects for tracking work items and connecting them to code changes
 
-
 ### Guidelines for SUPPORT_LEVEL
 
 #### SUPPORT_BEGINNER
@@ -345,6 +336,5 @@ The project is configured with AI development tools to enhance the development e
 - Briefly explain why certain approaches are used and link to relevant documentation or learning resources.
 - When suggesting fixes for errors, explain the root cause and how the solution addresses it to build understanding. Ask for confirmation before proceeding.
 - Offer introducing basic test cases that demonstrate how the code works and common edge cases to consider.
-
 
 DO NOT RUN lint automatically

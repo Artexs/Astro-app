@@ -1,29 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useLogin } from "@/components/hooks/useLogin";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function LoginForm() {
-  const {
-    email,
-    setEmail,
-    password,
-    setPassword,
-    error,
-    isLoading,
-    handleSubmit,
-  } = useLogin();
+  const { email, setEmail, password, setPassword, error, isLoading, handleSubmit } = useLogin();
 
   console.log("LoginForm error prop:", error); // Added console.log
 
@@ -71,13 +56,7 @@ export default function LoginForm() {
           </form>
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
-          <Button
-            type="submit"
-            form="login-form"
-            className="w-full"
-            disabled={isLoading}
-            data-testid="login-button"
-          >
+          <Button type="submit" form="login-form" className="w-full" disabled={isLoading} data-testid="login-button">
             {isLoading ? "Logging in..." : "Login"}
           </Button>
           <div className="text-sm text-muted-foreground">

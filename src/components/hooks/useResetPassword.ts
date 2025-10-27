@@ -39,8 +39,7 @@ export function useResetPassword() {
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
     if (!passwordRegex.test(password)) {
-      newErrors.password =
-        "Password must be 8+ characters with uppercase, lowercase, and a number.";
+      newErrors.password = "Password must be 8+ characters with uppercase, lowercase, and a number.";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -56,7 +55,10 @@ export function useResetPassword() {
     }
 
     // Set the session with the access token from the URL
-    const { error: setSessionError } = await supabaseClient.auth.setSession({ access_token: accessToken, refresh_token: "" });
+    const { error: setSessionError } = await supabaseClient.auth.setSession({
+      access_token: accessToken,
+      refresh_token: "",
+    });
 
     if (setSessionError) {
       setErrors({ general: setSessionError.message });

@@ -1,4 +1,4 @@
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator, expect } from "@playwright/test";
 
 export class HomePage {
   readonly page: Page;
@@ -9,14 +9,14 @@ export class HomePage {
 
   constructor(page: Page) {
     this.page = page;
-    this.introText = page.getByTestId('intro-text');
-    this.techStackSection = page.getByTestId('tech-stack-section');
-    this.toolsSection = page.getByTestId('tools-section');
-    this.conclusionText = page.getByTestId('conclusion-text');
+    this.introText = page.getByTestId("intro-text");
+    this.techStackSection = page.getByTestId("tech-stack-section");
+    this.toolsSection = page.getByTestId("tools-section");
+    this.conclusionText = page.getByTestId("conclusion-text");
   }
 
   async goto() {
-    await this.page.goto('/');
+    await this.page.goto("/");
   }
 
   async getTitle() {
@@ -24,6 +24,6 @@ export class HomePage {
   }
 
   async getHeader() {
-    return this.page.getByTestId('welcome-header');
+    return this.page.getByTestId("welcome-header");
   }
 }

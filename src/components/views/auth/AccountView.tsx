@@ -22,11 +22,7 @@ export default function AccountView() {
   return (
     <div className="container mx-auto py-10">
       <div className="space-y-8 max-w-2xl mx-auto">
-        {userEmail && (
-          <div className="text-center text-lg font-semibold">
-            Logged in as: {userEmail}
-          </div>
-        )}
+        {userEmail && <div className="text-center text-lg font-semibold">Logged in as: {userEmail}</div>}
         <ChangePasswordForm />
         <DeleteAccountForm />
       </div>

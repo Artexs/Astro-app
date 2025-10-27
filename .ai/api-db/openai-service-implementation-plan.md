@@ -68,13 +68,13 @@ The service will implement robust error handling to manage various API and netwo
     ```typescript
     // src/lib/services/openai.service.ts
 
-    import OpenAI from 'openai';
+    import OpenAI from "openai";
 
     interface ChatOptions {
       systemMessage?: string;
       userMessage: string;
       response_format?: {
-        type: 'json_object';
+        type: "json_object";
         json_schema: {
           name: string;
           strict: boolean;
@@ -88,33 +88,26 @@ The service will implement robust error handling to manage various API and netwo
 
     export class OpenAiService {
       private openai: OpenAI;
-      private defaultModel = 'gpt-4-turbo';
+      private defaultModel = "gpt-4-turbo";
 
       constructor() {
         const apiKey = process.env.OPENAI_API_KEY;
         if (!apiKey) {
-          throw new Error('OPENAI_API_KEY is not set in environment variables.');
+          throw new Error("OPENAI_API_KEY is not set in environment variables.");
         }
         this.openai = new OpenAI({ apiKey });
       }
 
       async chat(options: ChatOptions): Promise<string | object> {
-        const {
-          systemMessage,
-          userMessage,
-          response_format,
-          model,
-          temperature,
-          max_tokens,
-        } = options;
+        const { systemMessage, userMessage, response_format, model, temperature, max_tokens } = options;
 
         const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [];
 
         if (systemMessage) {
-          messages.push({ role: 'system', content: systemMessage });
+          messages.push({ role: "system", content: systemMessage });
         }
 
-        messages.push({ role: 'user', content: userMessage });
+        messages.push({ role: "user", content: userMessage });
 
         try {
           const response = await this.openai.chat.completions.create({
@@ -128,17 +121,17 @@ The service will implement robust error handling to manage various API and netwo
           const content = response.choices[0]?.message?.content;
 
           if (!content) {
-            throw new Error('No content in API response.');
+            throw new Error("No content in API response.");
           }
 
-          if (response_format?.type === 'json_object') {
+          if (response_format?.type === "json_object") {
             return JSON.parse(content);
           }
 
           return content;
         } catch (error) {
           // Implement custom error handling here
-          console.error('Error calling OpenAI API:', error);
+          console.error("Error calling OpenAI API:", error);
           throw error;
         }
       }
@@ -158,46 +151,43 @@ The service will implement robust error handling to manage various API and netwo
     ```typescript
     // src/pages/api/generate.ts
 
-    import type { APIRoute } from 'astro';
-    import { OpenAiService } from '../../lib/services/openai.service';
+    import type { APIRoute } from "astro";
+    import { OpenAiService } from "../../lib/services/openai.service";
 
     export const POST: APIRoute = async ({ request }) => {
       const { text } = await request.json();
 
       if (!text) {
-        return new Response(
-          JSON.stringify({ error: 'Text is required.' }),
-          { status: 400 }
-        );
+        return new Response(JSON.stringify({ error: "Text is required." }), { status: 400 });
       }
 
       const openAiService = new OpenAiService();
 
       try {
         const flashcards = await openAiService.chat({
-          systemMessage: 'You are an expert flashcard creator.',
+          systemMessage: "You are an expert flashcard creator.",
           userMessage: `Generate 5 flashcards from the following text: ${text}`,
           response_format: {
-            type: 'json_object',
+            type: "json_object",
             json_schema: {
-              name: 'flashcard_generation',
+              name: "flashcard_generation",
               strict: true,
               schema: {
-                type: 'object',
+                type: "object",
                 properties: {
                   flashcards: {
-                    type: 'array',
+                    type: "array",
                     items: {
-                      type: 'object',
+                      type: "object",
                       properties: {
-                        question: { type: 'string' },
-                        answer: { type: 'string' },
+                        question: { type: "string" },
+                        answer: { type: "string" },
                       },
-                      required: ['question', 'answer'],
+                      required: ["question", "answer"],
                     },
                   },
                 },
-                required: ['flashcards'],
+                required: ["flashcards"],
               },
             },
           },
@@ -205,14 +195,11 @@ The service will implement robust error handling to manage various API and netwo
 
         return new Response(JSON.stringify(flashcards), {
           status: 200,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json" },
         });
       } catch (error) {
         console.error(error);
-        return new Response(
-          JSON.stringify({ error: 'Failed to generate flashcards.' }),
-          { status: 500 }
-        );
+        return new Response(JSON.stringify({ error: "Failed to generate flashcards." }), { status: 500 });
       }
     };
     ```
