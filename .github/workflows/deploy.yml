@@ -69,23 +69,11 @@ jobs:
               ${{ secrets.SSH_USERNAME }}@${{ secrets.TS_SERVER_IP }} << EOF
             set -e
 
-            echo "Logging in to Docker Hub..."
             docker login ghcr.io -u Artexs -p ${{ env.GHCR_TOKEN }}
-
-            echo "Pulling latest image: ${{ env.IMAGE_TAG }}"
             docker pull ${{ env.IMAGE_TAG }}
+            docker stop ${{ env.CONTAINER_NAME }}
+            docker rm ${{ env.CONTAINER_NAME }}
 
-            echo "Stopping existing container if running..."
-            if [ "$(docker ps -q -f name=${{ env.CONTAINER_NAME }})" ]; then
-              docker stop ${{ env.CONTAINER_NAME }}
-            fi
-
-            echo "Removing existing container if exists..."
-            if [ "$(docker ps -aq -f name=${{ env.CONTAINER_NAME }})" ]; then
-              docker rm ${{ env.CONTAINER_NAME }}
-            fi
-
-            echo "Starting new container..."
             docker run -d \
               --name ${{ env.CONTAINER_NAME }} \
               -p 3000:3000 \
