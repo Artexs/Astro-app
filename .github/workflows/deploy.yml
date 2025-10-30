@@ -22,11 +22,9 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GH_REGISTRY_TOKEN }}
+        env:
+          GHCR_TOKEN: ${{ secrets.GH_REGISTRY_TOKEN }}
+        run: echo $GHCR_TOKEN | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Extract metadata for Docker
         id: meta
