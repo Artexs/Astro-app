@@ -76,17 +76,26 @@ const Header: React.FC<HeaderProps> = ({ isAuthenticated }) => {
     </>
   );
 
+  const NavigationLinks: React.FC = () => (
+    <>
+      {isAuthenticated ? (
+        <>
+          <AuthenticatedNavigation />
+          <AuthenticatedUserAccount />
+        </>
+      ) : (
+        <UnauthenticatedLinks />
+      )}
+    </>
+  );
+
   return (
     <header className="bg-background/50 backdrop-blur-lg border-b px-4 md:px-6 h-16 flex items-center justify-center">
       <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-        {isAuthenticated ? (
-          <>
-            <AuthenticatedNavigation />
-            <AuthenticatedUserAccount />
-          </>
-        ) : (
-          <UnauthenticatedLinks />
-        )}
+        <Button asChild variant="default" size="lg">
+          <a href="/">Home</a>
+        </Button>
+        <NavigationLinks />
       </nav>
       <Sheet>
         <SheetTrigger asChild>
@@ -97,14 +106,10 @@ const Header: React.FC<HeaderProps> = ({ isAuthenticated }) => {
         </SheetTrigger>
         <SheetContent side="right">
           <div className="grid gap-4 p-4">
-            {isAuthenticated ? (
-              <>
-                <AuthenticatedNavigation />
-                <AuthenticatedUserAccount />
-              </>
-            ) : (
-              <UnauthenticatedLinks />
-            )}
+            <Button asChild variant="default" size="lg">
+              <a href="/">Home</a>
+            </Button>
+            <NavigationLinks />
           </div>
         </SheetContent>
       </Sheet>

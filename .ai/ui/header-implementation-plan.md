@@ -14,6 +14,7 @@ The `Header` component will have two primary states:
 
 - **Trigger**: When a user is logged in (i.e., a valid Supabase session exists).
 - **Displayed Elements**:
+  - **Home Button**: A button that links to the homepage (`/`).
   - **Logo**: The application logo, which links to the main dashboard (`/my-cards`).
   - **Navigation Links**:
     - `Create` (links to `/create`)
@@ -27,6 +28,7 @@ The `Header` component will have two primary states:
 
 - **Trigger**: When no user is logged in.
 - **Displayed Elements**:
+  - **Home Button**: A button that links to the homepage (`/`).
   - **Logo**: The application logo, which links to the homepage (`/`).
   - **Authentication Links**:
     - `Login` (links to `/login`)
