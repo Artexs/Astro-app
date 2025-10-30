@@ -10,7 +10,6 @@ else
   echo "Error: Environment file '$ENV_FILE' not found."
   exit 1
 fi
-fi
 
 # Check if required environment variables are set
 if [ -z "$PUBLIC_SUPABASE_URL" ] || \
@@ -23,7 +22,7 @@ fi
 
 # Check if a container with the same name already exists and remove it
 CONTAINER_NAME="astro-app-container"
-IMAGE_NAME="astro-app:latest"
+IMAGE_NAME="astro-app:local"
 
 # Check if a container with the same name already exists and remove it
 if [ "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
@@ -38,8 +37,8 @@ docker build \
   --build-arg PUBLIC_SUPABASE_KEY="$PUBLIC_SUPABASE_KEY" \
   -t $IMAGE_NAME . || { echo "Docker build failed!"; exit 1; }
 
-echo "Running Docker container '$IMAGE_NAME'"
-docker run --name $CONTAINER_NAME -p 3000:3000 --network host \
+echo "Running Docker container '$CONTAINER_NAME' from image '$IMAGE_NAME'"
+docker run -d --rm --name $CONTAINER_NAME -p 3000:3000 \
   -e PUBLIC_SUPABASE_URL="$PUBLIC_SUPABASE_URL" \
   -e PUBLIC_SUPABASE_KEY="$PUBLIC_SUPABASE_KEY" \
   -e OPENAI_API_KEY="$OPENAI_API_KEY" \

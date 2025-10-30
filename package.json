@@ -22,7 +22,6 @@
     "supabase:stop:e2e": "npx supabase --workdir supabase_e2e stop",
     "supabase:start:all": "npm run supabase:start && npm run supabase:start:e2e",
     "supabase:stop:all": "npm run supabase:stop && npm run supabase:stop:e2e",
-    "docker:build": "docker build --no-cache -t astro-app:latest .",
     "docker:run": "npm run docker:stop && ./run-docker-container.sh",
     "docker:run:test": "npm run docker:stop && ./run-docker-container.sh .env.test",
     "docker:stop": "docker rm -f astro-app-container"
