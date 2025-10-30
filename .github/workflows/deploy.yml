@@ -69,8 +69,6 @@ jobs:
               ${{ secrets.SSH_USERNAME }}@${{ secrets.TS_SERVER_IP }} << EOF
             set -e
 
-            echo "Logging in to GitHub Container Registry..."
-            echo "${{ GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
             echo "Pulling latest image: ${{ env.IMAGE_TAG }}"
             docker pull ${{ env.IMAGE_TAG }}
