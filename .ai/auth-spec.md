@@ -12,7 +12,7 @@ The following `.astro` pages will be created in the `src/pages/` directory:
 
 - **`/login.astro`**: Login page. It will render a React component with the login form. If the user is already logged in, they will be redirected to `/my-cards`.
 - **`/register.astro`**: Registration page. It will render a React component with the registration form. After successful registration, it will display a message about the need to verify the email address.
-- **`/forgot-password.astro`**: Page to initiate the password reset process. It will render a React component with a form to enter an email address.
+- **`/forgot-password.astro`**: Page to initiate the password reset process. It will render a React component with a form to enter an email address. (Note: This page is temporarily disabled for a refactor).
 - **`/reset-password.astro`**: The page the user lands on after clicking the link from the password reset email. It will contain a form to set a new password.
 - **`/account.astro`**: Account management page, accessible only to logged-in users. It will allow changing the password and deleting the account.
 
