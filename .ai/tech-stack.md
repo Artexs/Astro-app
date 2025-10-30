@@ -24,3 +24,15 @@ This document outlines the core technologies used in the AI Flashcard Generator 
 
 - **Node.js:** The runtime environment for Astro and all related tooling.
 - **ESLint & Prettier:** Used for code linting and formatting to ensure a consistent and high-quality codebase.
+
+## Testing
+
+- **Vitest:** Used for running unit tests.
+- **Playwright:** Used for end-to-end testing in a real browser environment.
+
+## CI/CD and Deployment
+
+- **GitHub Actions:** Used to orchestrate the CI/CD workflows for automated testing and deployment.
+- **Docker:** Used for containerizing the application to ensure consistent environments.
+- **GitHub Container Registry (ghcr.io):** Used as a private registry to store Docker images.
+- **Tailscale:** Provides secure networking for the deployment process, allowing the GitHub Actions runner to connect to the production server.

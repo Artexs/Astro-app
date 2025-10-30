@@ -126,6 +126,37 @@ The core workflow is simple:
 - `npm run lint`: Run ESLint to check for code quality issues.
 - `npm run lint:fix`: Automatically fix ESLint issues.
 
+## CI/CD and Deployment
+
+This project is configured with CI/CD pipelines for automated testing and deployment.
+
+### Continuous Integration (CI)
+
+The CI pipeline is defined in `.github/workflows/ci-master.yml` and runs automatically on every pull request to the `master` branch. It performs the following checks:
+
+- **Linting**: Ensures code formatting and style consistency using ESLint and Prettier.
+- **Unit Tests**: Runs unit tests with Vitest.
+- **End-to-End (E2E) Tests**: Runs E2E tests with Playwright to validate application behavior in a browser environment.
+
+### Continuous Deployment (CD)
+
+The deployment pipeline is defined in `.github/workflows/deploy.yml` and is triggered manually. It performs the following steps:
+
+1.  **Builds a Docker Image**: The application is containerized into a Docker image.
+2.  **Pushes to Registry**: The image is pushed to the GitHub Container Registry (ghcr.io).
+3.  **Deploys to Server**: The new image is pulled onto the production server, and the running container is updated.
+
+### Local Docker Deployment
+
+You can build and run the application locally using Docker. This is the recommended way to run the application for E2E testing or to simulate the production environment.
+
+1.  **Ensure you have a `.env` file** with the necessary environment variables (see [Getting Started Locally](#getting-started-locally)).
+2.  **Run the script**:
+    ```bash
+    npm run docker:run
+    ```
+    This script will build the Docker image and start a container. The application will be available at `http://localhost:3000`.
+
 ## Project Structure
 
 ```
