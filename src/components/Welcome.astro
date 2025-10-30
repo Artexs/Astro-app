@@ -1,3 +1,10 @@
+---
+const { session } = Astro.locals;
+const isAuthenticated = !!session;
+const buttonText = isAuthenticated ? "Go to My Flashcards" : "Get Started for Free";
+const buttonUrl = isAuthenticated ? "/my-cards" : "/register";
+---
+
 <div class="relative w-full mx-auto p-4 sm:p-8">
   <div
     class="relative max-w-4xl mx-auto backdrop-blur-xl bg-gradient-to-b from-white/10 to-white/5 rounded-2xl shadow-2xl p-8 text-white border border-white/10"
@@ -5,70 +12,18 @@
     <div class="space-y-8">
       <div class="text-center">
         <h1 class="text-6xl font-bold mb-4 text-gradient" data-testid="welcome-header">
-          Witaj w 10xDevs Astro Starter!
+          AI Flashcard Generator
         </h1>
         <p class="text-xl text-blue-100/90 drop-shadow-md" data-testid="intro-text">
-          Ten projekt został zbudowany w oparciu o nowoczesny stack technologiczny:
+          Automatically create study materials from your notes, articles, or documents. Let AI do the hard work, so you can focus on learning.
         </p>
       </div>
 
-      <div class="flex flex-col gap-6 max-w-2xl mx-auto">
-        <div
-          class="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg rounded-xl p-6 border border-white/10"
-          data-testid="tech-stack-section"
-        >
-          <h2 class="text-2xl font-semibold mb-4 text-gradient"></h2>
-          <ul class="space-y-3">
-            <li class="flex items-center space-x-3">
-              <span class="font-mono bg-blue-900/50 px-3 py-1.5 rounded-lg text-blue-200 shadow-sm">Astro v5.5.5</span>
-              <span class="text-blue-100/90">- Metaframework do aplikacji webowych</span>
-            </li>
-            <li class="flex items-center space-x-3">
-              <span class="font-mono bg-blue-900/50 px-3 py-1.5 rounded-lg text-blue-200 shadow-sm">React v19</span>
-              <span class="text-blue-100/90">- Biblioteka UI do komponentów interaktywnych</span>
-            </li>
-            <li class="flex items-center space-x-3">
-              <span class="font-mono bg-blue-900/50 px-3 py-1.5 rounded-lg text-blue-200 shadow-sm">TypeScript</span>
-              <span class="text-blue-100/90">- Typowanie statyczne</span>
-            </li>
-          </ul>
-        </div>
-
-        <div class="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg rounded-xl p-6 border border-white/10">
-          <h2 class="text-2xl font-semibold mb-4 text-gradient"></h2>
-          <ul class="space-y-3">
-            <li class="flex items-center space-x-3">
-              <span class="font-mono bg-blue-900/50 px-3 py-1.5 rounded-lg text-blue-200 shadow-sm"
-                >Tailwind CSS v4</span
-              >
-              <span class="text-blue-100/90">- Utility-first CSS framework</span>
-            </li>
-          </ul>
-        </div>
-
-        <div
-          class="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg rounded-xl p-6 border border-white/10"
-          data-testid="tools-section"
-        >
-          <h2 class="text-2xl font-semibold mb-4 text-gradient"></h2>
-          <span class="text-blue-100/90">- Lintowanie kodu</span>
-        </div>
-        <li class="flex items-center space-x-3">
-          <span class="font-mono bg-blue-900/50 px-3 py-1.5 rounded-lg text-blue-200 shadow-sm">Prettier</span>
-          <span class="text-blue-100/90">- Formatowanie kodu</span>
-        </li>
-        <li class="flex items-center space-x-3">
-          <span class="font-mono bg-blue-900/50 px-3 py-1.5 rounded-lg text-blue-200 shadow-sm"
-            >Husky i Lint-staged</span
-          >
-          <span class="text-blue-100/90">- Automatyczna analiza kodu przed commitowaniem</span>
-        </li>
+      <div class="flex justify-center">
+        <a href={buttonUrl} class="inline-block bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-lg font-semibold px-8 py-4 rounded-lg shadow-lg transition-transform transform hover:scale-105">
+          {buttonText}
+        </a>
       </div>
     </div>
   </div>
-
-  <p class="text-lg text-center text-blue-100/90 mt-8 leading-relaxed" data-testid="conclusion-text">
-    Starter zawiera wszystko, czego potrzebujesz do rozpoczęcia tworzenia <br class="hidden sm:block" />
-    <span class="font-semibold text-gradient">nowoczesnych aplikacji webowych!</span>
-  </p>
 </div>
