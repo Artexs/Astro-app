@@ -243,3 +243,21 @@ Students and lifelong learners often have large volumes of text (e.g., lecture n
 - **User Retention**:
   - Week 1 retention rate: The percentage of new users who return to use the app in the week after signing up.
   - Month 1 retention rate: The percentage of new users who are still active after one month.
+
+## 7. Deployment and Operations
+
+### Continuous Integration (CI)
+
+A CI pipeline is configured to run on every pull request to the `master` branch. This ensures that all changes are automatically validated before being considered for merging. The pipeline performs the following automated checks:
+
+- **Linting**: Code is checked for style and formatting consistency.
+- **Unit Tests**: Automated tests are run to verify individual components and functions.
+- **End-to-End (E2E) Tests**: The application is tested from end to end to ensure that key user flows are working as expected.
+
+### Continuous Deployment (CD)
+
+Deployment to the production environment is a manual process triggered after changes have been merged into the `master` branch. The process is as follows:
+
+1.  **Build Docker Image**: A new Docker image is built containing the latest version of the application.
+2.  **Push to Registry**: The image is pushed to the GitHub Container Registry.
+3.  **Deploy**: The new image is deployed to the production server, updating the running application.
