@@ -17,7 +17,7 @@ const ManagedCard: React.FC<ManagedCardProps> = ({ card, onDeleteRequest, showDe
       setShowModal(true); // Show modal immediately
     } else {
       // Hide modal after animation completes
-      const timer = setTimeout(() => setShowModal(false), 0); // 300ms matches transition duration
+      const timer = setTimeout(() => setShowModal(false), 300); // 300ms matches transition duration
       return () => clearTimeout(timer);
     }
   }, [isExpanded]);
@@ -64,8 +64,8 @@ const ManagedCard: React.FC<ManagedCardProps> = ({ card, onDeleteRequest, showDe
   // Render the expanded card with animation
   return (
     <div
-      className={`border rounded-lg p-4 flex flex-col justify-between shadow-md relative
-        fixed inset-0 z-50 m-auto w-[400px] h-[250px] bg-white dark:bg-gray-800 shadow-2xl border-blue-500 p-8 overflow-auto transform-origin-center transition-all duration-300 ease-out
+      className={`flashcard-background border rounded-lg p-4 flex flex-col justify-between shadow-md relative
+        fixed inset-0 z-50 m-auto w-[400px] h-[250px] shadow-2xl border-blue-500 p-8 overflow-auto transform-origin-center transition-all duration-300 ease-out
         ${isExpanded ? "scale-100 opacity-100" : "scale-50 opacity-0"}
       `}
       onMouseLeave={handleMouseLeave}

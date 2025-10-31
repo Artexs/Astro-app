@@ -141,4 +141,13 @@
   .rotate-y-180 {
     transform: rotateY(180deg);
   }
+  .flashcard-background {
+    background: linear-gradient(
+      to bottom right,
+      oklch(90% 0.05 264.376) 0%,
+      oklch(90% 0.05 303.9) 50%,
+      oklch(90% 0.05 22.216) 100%
+    );
+    @apply text-foreground;
+  }
 }

@@ -35,7 +35,7 @@ const StudyCard = ({ card }: StudyCardProps) => {
       >
         {/* Front of the card */}
         <div className="absolute w-full h-full backface-hidden">
-          <Card className="flex items-center justify-center w-full h-full">
+          <Card className="flex items-center justify-center w-full h-full flashcard-background">
             <CardContent className="p-6 text-xl text-center">
               <p>{card.question}</p>
             </CardContent>
@@ -44,7 +44,7 @@ const StudyCard = ({ card }: StudyCardProps) => {
 
         {/* Back of the card */}
         <div className="absolute w-full h-full rotate-y-180 backface-hidden">
-          <Card className="flex items-center justify-center w-full h-full bg-secondary">
+          <Card className="flex items-center justify-center w-full h-full flashcard-background">
             <CardContent className="p-6 text-xl text-center">
               <p>{card.answer}</p>
             </CardContent>
