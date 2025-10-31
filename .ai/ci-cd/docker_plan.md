@@ -1,17 +1,20 @@
 # Dockerization Plan for Astro Node.js Application
 
 ## 1. Goal
+
 To containerize the Astro Node.js application into a Docker image, enabling consistent deployment and local execution with necessary environment variables.
 
 ## 2. Base Image Selection
+
 Given the request for a "light Ubuntu version", we will use a slim Node.js image based on Debian (which Ubuntu is based on). This provides a good balance between size and compatibility.
 Recommended: `node:22-slim` or `node:22-alpine` (if even smaller size is critical and Alpine compatibility is confirmed). For this plan, we will proceed with `node:22-slim`.
 
 ## 3. Dockerfile Strategy
 
 A multi-stage build will be used to optimize the Docker image size.
-*   **Build Stage**: Install dependencies and build the Astro application.
-*   **Production Stage**: Copy only the necessary build artifacts and production dependencies to a smaller runtime image.
+
+- **Build Stage**: Install dependencies and build the Astro application.
+- **Production Stage**: Copy only the necessary build artifacts and production dependencies to a smaller runtime image.
 
 ### Dockerfile (`./Dockerfile`)
 
@@ -65,7 +68,8 @@ To build the Docker image, navigate to the project root directory and execute:
 ```bash
 docker build -t astro-app:latest .
 ```
-*   `-t astro-app:latest`: Tags the image with the name `astro-app` and the tag `latest`.
+
+- `-t astro-app:latest`: Tags the image with the name `astro-app` and the tag `latest`.
 
 ### 4.2. Run the Docker Container Locally
 
@@ -78,17 +82,18 @@ docker run -p 3000:3000 \
   -e OPENAI_API_KEY="your_openai_api_key" \
   astro-app:latest
 ```
-*   `-p 3000:3000`: Maps port 3000 of the host to port 3000 of the container.
-*   `-e VAR_NAME="value"`: Sets environment variables inside the container. **Remember to replace placeholder values with your actual keys.**
-*   `astro-app:latest`: Specifies the image to run.
+
+- `-p 3000:3000`: Maps port 3000 of the host to port 3000 of the container.
+- `-e VAR_NAME="value"`: Sets environment variables inside the container. **Remember to replace placeholder values with your actual keys.**
+- `astro-app:latest`: Specifies the image to run.
 
 ### 4.3. Environment Variables
 
 The following environment variables are identified as potentially necessary based on common Node.js/Astro project setups and the project's `.env.example` and `.env.test` files:
 
-*   `PUBLIC_SUPABASE_URL`: URL for Supabase client.
-*   `PUBLIC_SUPABASE_KEY`: Public API key for Supabase client.
-*   `OPENAI_API_KEY`: API key for OpenAI services.
+- `PUBLIC_SUPABASE_URL`: URL for Supabase client.
+- `PUBLIC_SUPABASE_KEY`: Public API key for Supabase client.
+- `OPENAI_API_KEY`: API key for OpenAI services.
 
 These should be provided during the `docker run` command or managed via a `.env` file if using Docker Compose. For this plan, we focus on direct `docker run` commands.
 
@@ -104,8 +109,9 @@ Add the following to the `"scripts"` section of your `package.json`:
 ```
 
 **Usage:**
-*   `npm run docker:build`
-*   `npm run docker:run` (Remember to replace environment variable placeholders before running).
+
+- `npm run docker:build`
+- `npm run docker:run` (Remember to replace environment variable placeholders before running).
 
 ## 6. Shell Scripts for Convenience
 
@@ -182,8 +188,9 @@ Make it executable:
 `chmod +x run-docker-container.sh`
 
 ## 7. Next Steps
-*   Create the `Dockerfile` in the project root.
-*   Update `package.json` with the new scripts.
-*   (Optional) Create `build-docker-image.sh` and `run-docker-container.sh`.
-*   Create a `.env.docker` file with your actual environment variables if using `run-docker-container.sh`.
-*   Execute the build and run commands/scripts.
+
+- Create the `Dockerfile` in the project root.
+- Update `package.json` with the new scripts.
+- (Optional) Create `build-docker-image.sh` and `run-docker-container.sh`.
+- Create a `.env.docker` file with your actual environment variables if using `run-docker-container.sh`.
+- Execute the build and run commands/scripts.

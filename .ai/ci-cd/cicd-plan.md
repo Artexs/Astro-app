@@ -29,6 +29,7 @@ The CI pipeline is defined in `.github/workflows/ci-master.yml`.
 ### Jobs
 
 #### 1. `lint`
+
 - **Purpose**: Enforces code style and formatting consistency across the codebase.
 - **Steps**:
   1. Checks out the code.
@@ -37,6 +38,7 @@ The CI pipeline is defined in `.github/workflows/ci-master.yml`.
   4. Runs `npm run format` to check for Prettier formatting issues.
 
 #### 2. `test`
+
 - **Purpose**: Runs unit tests to verify the correctness of individual components and functions.
 - **Depends On**: `lint`
 - **Steps**:
@@ -46,6 +48,7 @@ The CI pipeline is defined in `.github/workflows/ci-master.yml`.
   4. Runs `npm run test` to execute the Vitest test suite.
 
 #### 3. `e2e-test`
+
 - **Purpose**: Runs end-to-end tests to validate full application flows in a real browser environment.
 - **Depends On**: `lint`
 - **Steps**:
@@ -66,6 +69,7 @@ The CD pipeline is defined in `.github/workflows/deploy.yml`.
 ### Secrets Required
 
 The following secrets must be configured in the GitHub repository settings:
+
 - `GH_REGISTRY_TOKEN`: A GitHub Personal Access Token with `write:packages` scope to push to ghcr.io.
 - `PUBLIC_SUPABASE_URL`: Supabase project URL.
 - `PUBLIC_SUPABASE_KEY`: Supabase project anon key.

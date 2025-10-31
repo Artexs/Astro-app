@@ -11,16 +11,18 @@ const buttonUrl = isAuthenticated ? "/my-cards" : "/register";
   >
     <div class="space-y-8">
       <div class="text-center">
-        <h1 class="text-6xl font-bold mb-4 text-gradient" data-testid="welcome-header">
-          AI Flashcard Generator
-        </h1>
+        <h1 class="text-6xl font-bold mb-4 text-gradient" data-testid="welcome-header">AI Flashcard Generator</h1>
         <p class="text-xl text-blue-100/90 drop-shadow-md" data-testid="intro-text">
-          Automatically create study materials from your notes, articles, or documents. Let AI do the hard work, so you can focus on learning.
+          Automatically create study materials from your notes, articles, or documents. Let AI do the hard work, so you
+          can focus on learning.
         </p>
       </div>
 
       <div class="flex justify-center">
-        <a href={buttonUrl} class="inline-block bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-lg font-semibold px-8 py-4 rounded-lg shadow-lg transition-transform transform hover:scale-105">
+        <a
+          href={buttonUrl}
+          class="inline-block bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-lg font-semibold px-8 py-4 rounded-lg shadow-lg transition-transform transform hover:scale-105"
+        >
           {buttonText}
         </a>
       </div>
