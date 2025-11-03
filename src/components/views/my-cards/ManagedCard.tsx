@@ -10,6 +10,7 @@ interface ManagedCardProps {
 
 const ManagedCard: React.FC<ManagedCardProps> = ({ card, onDeleteRequest, showDeleteButton }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false); // New state to control card flip
   const [showModal, setShowModal] = useState(false); // State to control modal visibility for animation
 
   useEffect(() => {
@@ -23,14 +24,16 @@ const ManagedCard: React.FC<ManagedCardProps> = ({ card, onDeleteRequest, showDe
   }, [isExpanded]);
 
   const handleCardClick = () => {
-    if (!showDeleteButton && !isExpanded) {
-      setIsExpanded(true);
+    if (!showDeleteButton && isExpanded) {
+      setIsFlipped(true);
     }
+    setIsExpanded(true);
   };
 
   const handleMouseLeave = () => {
     if (!showDeleteButton) {
       setIsExpanded(false);
+      setIsFlipped(false);
     }
   };
 
@@ -65,10 +68,11 @@ const ManagedCard: React.FC<ManagedCardProps> = ({ card, onDeleteRequest, showDe
   return (
     <div
       className={`flashcard-background border rounded-lg p-4 flex flex-col justify-between shadow-md relative
-        fixed inset-0 z-50 m-auto w-[400px] h-[250px] shadow-2xl border-blue-500 p-8 overflow-auto transform-origin-center transition-all duration-300 ease-out
-        ${isExpanded ? "scale-100 opacity-100" : "scale-50 opacity-0"}
-      `}
+              fixed inset-0 z-50 m-auto w-[400px] h-[250px] shadow-2xl border-blue-500 p-8 overflow-auto transform-origin-center transition-all duration-300 ease-out
+              ${isExpanded ? "scale-100 opacity-100" : "scale-50 opacity-0"}
+            `}
       onMouseLeave={handleMouseLeave}
+      onClick={handleCardClick}
     >
       {showDeleteButton && (
         <Button
@@ -81,8 +85,8 @@ const ManagedCard: React.FC<ManagedCardProps> = ({ card, onDeleteRequest, showDe
         </Button>
       )}
       <div>
-        <p className="text-sm text-gray-500 mb-2">Answer</p>
-        <p className="font-semibold mb-4 text-lg">{card.answer}</p>
+        <p className="text-sm text-gray-500 mb-2">{isFlipped ? "Answer" : "Question"}</p>
+        <p className="font-semibold mb-4 text-lg">{isFlipped ? card.answer : card.question}</p>
       </div>
     </div>
   );
