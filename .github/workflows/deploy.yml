@@ -70,6 +70,7 @@ jobs:
             set -e
 
             docker login ghcr.io -u Artexs -p ${{ env.GHCR_TOKEN }}
+            docker rmi ${{ env.IMAGE_TAG }} || true
             docker pull ${{ env.IMAGE_TAG }}
             docker stop ${{ env.CONTAINER_NAME }}
             docker rm ${{ env.CONTAINER_NAME }}
@@ -77,7 +78,7 @@ jobs:
             docker run -d \
               --name ${{ env.CONTAINER_NAME }} \
               -p 3000:3000 \
-              --network host \
+              --pull always \
               --restart unless-stopped \
               -e PUBLIC_SUPABASE_URL="${{ secrets.PUBLIC_SUPABASE_URL }}" \
               -e PUBLIC_SUPABASE_KEY="${{ secrets.PUBLIC_SUPABASE_KEY }}" \
