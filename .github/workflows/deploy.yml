@@ -59,7 +59,7 @@ jobs:
 
       - name: Deploy to Server
         env:
-          IMAGE_TAG: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          IMAGE_TAG: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:test
           CONTAINER_NAME: astro-app-container
           GHCR_TOKEN: ${{ secrets.GH_REGISTRY_TOKEN }}
         run: |
