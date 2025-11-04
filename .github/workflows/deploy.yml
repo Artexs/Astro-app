@@ -62,32 +62,37 @@ jobs:
           IMAGE_TAG: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:test
           CONTAINER_NAME: astro-app-container
           GHCR_TOKEN: ${{ secrets.GH_REGISTRY_TOKEN }}
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_KEY: ${{ secrets.PUBLIC_SUPABASE_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           echo "Token length: ${#GHCR_TOKEN}"
           ssh -o StrictHostKeyChecking=no \
               -o UserKnownHostsFile=/dev/null \
-              ${{ secrets.SSH_USERNAME }}@${{ secrets.TS_SERVER_IP }} << EOF
+              -o SendEnv="IMAGE_TAG CONTAINER_NAME GHCR_TOKEN PUBLIC_SUPABASE_URL PUBLIC_SUPABASE_KEY OPENAI_API_KEY" \
+              ${{ secrets.SSH_USERNAME }}@${{ secrets.TS_SERVER_IP }} \
+              'bash -s' << 'ENDSSH'
             set -e
 
             docker login ghcr.io -u Artexs -p ${{ env.GHCR_TOKEN }}
-            docker rmi ${{ env.IMAGE_TAG }} || true
-            docker pull ${{ env.IMAGE_TAG }}
-            docker stop ${{ env.CONTAINER_NAME }}
-            docker rm ${{ env.CONTAINER_NAME }}
+            docker rmi "$IMAGE_TAG" || true
+            docker pull "$IMAGE_TAG"
+            docker stop "$CONTAINER_NAME" || true
+            docker rm "$CONTAINER_NAME" || true
 
             docker run -d \
-              --name ${{ env.CONTAINER_NAME }} \
+              --name "$CONTAINER_NAME" \
               -p 3000:3000 \
               --pull always \
               --restart unless-stopped \
-              -e PUBLIC_SUPABASE_URL="${{ secrets.PUBLIC_SUPABASE_URL }}" \
-              -e PUBLIC_SUPABASE_KEY="${{ secrets.PUBLIC_SUPABASE_KEY }}" \
-              -e OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
-              ${{ env.IMAGE_TAG }}
+              -e "PUBLIC_SUPABASE_URL=$PUBLIC_SUPABASE_URL" \
+              -e "PUBLIC_SUPABASE_KEY=$PUBLIC_SUPABASE_KEY" \
+              -e "OPENAI_API_KEY=$OPENAI_API_KEY" \
+              "$IMAGE_TAG"
 
             echo "Cleaning up old images..."
             docker image prune -af --filter "label=org.opencontainers.image.source=https://github.com/${{ github.repository }}" || true
 
             echo "Deployment completed successfully at $(date)"
-            docker ps -f name=${{ env.CONTAINER_NAME }}
-          EOF
+            docker ps -f name="$CONTAINER_NAME"
+          ENDSSH
